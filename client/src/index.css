@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+
+/* CSS For Navbar Menu */
+.menu-item {
+  position: relative;
+  color: #333; /* Warna teks */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.menu-item::before {
+  content: "";
+  position: absolute;
+  bottom: 0; /* Garis di bawah teks */
+  left: 50%; /* Mulai dari tengah */
+  width: 0; /* Awalnya lebar garis adalah 0 */
+  height: 3px; /* Tinggi garis */
+  background-color: #007bff; /* Warna garis */
+  transform: translateX(-50%); /* Pastikan mulai dari tengah elemen */
+  transition: width 0.5s ease;
+}
+
+.menu-item:hover::before {
+  width: 100%; /* Lebarkan garis hingga seluruh lebar elemen */
+}
+
+
+/* CSS for content post */
+.prose {
+  line-height: 1.75;
+}
+
+.prose h2 {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: #000;
+}
+
+.prose em {
+  font-style: italic;
+  color: #6b7280;
+}
+
+.prose blockquote {
+  font-size: 1rem;
+  font-style: italic;
+  color: #4b5563;
+  border-left: 4px solid #6b7280;
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.prose ul li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.prose ul li:last-child {
+  margin-bottom: 0;
+}
