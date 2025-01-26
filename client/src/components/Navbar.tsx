@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { blogData, dummyUser } from "../data/data";
 import logo from "../assets/logo.svg";
 import { GoSearch } from "react-icons/go";
 import { Blog } from "../types";
 import debounce from "lodash.debounce";
 import SearchModal from "./SearchModal";
+import { CustomGoogleLoginButton } from "./GoogleLogin";
 
 const Navbar: React.FC = () => {
-  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
@@ -139,12 +139,7 @@ const Navbar: React.FC = () => {
               <GoSearch />
             </div>
             {!isLoggedIn ? (
-              <button
-                onClick={() => navigate("/login")}
-                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
-              >
-                Login
-              </button>
+              <CustomGoogleLoginButton />
             ) : (
               <div className="relative">
                 <button
