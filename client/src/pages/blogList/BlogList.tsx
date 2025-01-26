@@ -3,10 +3,12 @@ import Advertisement from "../../components/Advertisement";
 import { blogData } from "../../data/data";
 import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { FaRegBookmark, FaRegComment, FaRegEye, FaRegHeart } from "react-icons/fa";
 
 const BlogList: React.FC = () => {
   const navigate = useNavigate();
   const pathname = window.location.pathname;
+
   return (
     <>
       <div
@@ -22,7 +24,7 @@ const BlogList: React.FC = () => {
               {blogData.map((blog) => (
                 <div
                   key={blog.id}
-                  className="flex items-start gap-4 bg-white p-4 border border-gray-300 shadow cursor-pointer hover:bg-gray-100"
+                  className="relative flex items-start gap-4 bg-white p-4 border border-gray-300 shadow cursor-pointer hover:bg-gray-100"
                   onClick={() => {
                     navigate(`/blog/${blog.id}`);
                     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -37,10 +39,22 @@ const BlogList: React.FC = () => {
                     <h4 className="text-lg font-semibold line-clamp-2">
                       {blog.title}
                     </h4>
-                    <p className="text-gray-500 text-sm">
-                      By {blog.author} - {blog.comments.length} Comments
+                    <div className="text-gray-500 text-sm flex items-center gap-1">
+                      By {blog.author} . {blog.comments.length} <FaRegComment /> . {blog.likes} <FaRegHeart /> . 15 <FaRegEye />
+                    </div>
+                    <p className="text-gray-900 line-clamp-3 mt-2">
+                      {blog.highlight}
                     </p>
-                    <p className="text-gray-500 text-sm">{blog.likes} Likes</p>
+                  </div>
+
+                  <div
+                    className="absolute top-2 right-2 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log("Bookmark clicked");
+                    }}
+                  >
+                    <FaRegBookmark />
                   </div>
                 </div>
               ))}

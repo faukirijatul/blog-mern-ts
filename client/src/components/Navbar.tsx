@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { dummyUser } from "../data/data";
+import { blogData, dummyUser } from "../data/data";
 import logo from "../assets/logo.svg";
+import { GoSearch } from "react-icons/go";
+import { Blog } from "../types";
+import debounce from "lodash.debounce";
+import SearchModal from "./SearchModal";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
+  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>([]);
 
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
@@ -23,36 +30,88 @@ const Navbar: React.FC = () => {
     setShowDropdown(false);
   };
 
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredBlogs([]);
+    } else {
+      const results = blogData.filter((blog) =>
+        blog.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredBlogs(results.slice(0, 5));
+    }
+  }, [searchQuery]);
+
+  const handleSearchChange = debounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    },
+    300
+  );
+
   return (
-    <header className="shadow px-4 fixed top-0 left-0 right-0 z-50 bg-white">
-      <div className="flex items-center justify-between max-w-screen-xl mx-auto">
-        <div className="flex items-center gap-2">
-          {/* Hamburger Menu untuk versi mobile */}
-          <button
-            onClick={toggleMobileMenu}
-            className="lg:hidden text-2xl text-gray-700"
-          >
-            {showMobileMenu ? <FaTimes /> : <FaBars />}
-          </button>
-
-          {/* Logo di kiri */}
-          <div className="text-2xl font-bold py-4">
-            <Link
-              to="/"
-              className="flex items-center"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    <>
+      <header className="shadow px-2 md:px-8 xl:px-30 fixed top-0 left-0 right-0 z-50 bg-white">
+        <div className="flex items-center justify-between max-w-screen-xl mx-auto">
+          <div className="flex items-center gap-2">
+            {/* Hamburger Menu untuk versi mobile */}
+            <button
+              onClick={toggleMobileMenu}
+              className="lg:hidden text-2xl text-gray-700"
             >
-              <img src={logo} alt="Logo" className="h-8" />
-            </Link>
-          </div>
-        </div>
+              {showMobileMenu ? <FaTimes /> : <FaBars />}
+            </button>
 
-        {/* Menu di desktop */}
-        <nav
-          className={`hidden lg:flex flex-row items-center gap-6 relative bg-transparent w-auto p-0`}
-        >
-          {["Home", "Category 1", "Category 2", "Category 3", "Category 4"].map(
-            (menu, index) => (
+            {/* Logo di kiri */}
+            <div className="text-2xl font-bold py-4">
+              <Link
+                to="/"
+                className="flex items-center"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              >
+                <img src={logo} alt="Logo" className="h-8" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Menu di desktop */}
+          <nav
+            className={`hidden lg:flex flex-row items-center gap-6 relative bg-transparent w-auto p-0`}
+          >
+            {[
+              "Home",
+              "Category 1",
+              "Category 2",
+              "Category 3",
+              "Category 4",
+            ].map((menu, index) => (
+              <Link
+                key={index}
+                to={
+                  menu === "Home"
+                    ? "/"
+                    : `/category/${menu.toLowerCase().replace(" ", "-")}`
+                }
+                className="menu-item relative inline-block px-4 py-5 w-fit"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              >
+                {menu}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Menu di mobile */}
+          <nav
+            className={`${
+              showMobileMenu ? "block" : "hidden"
+            } flex flex-col lg:hidden items-center absolute top-16 left-0 bg-white w-full shadow-lg p-4`}
+          >
+            {[
+              "Home",
+              "Category 1",
+              "Category 2",
+              "Category 3",
+              "Category 4",
+            ].map((menu, index) => (
               <Link
                 key={index}
                 to={
@@ -68,82 +127,75 @@ const Navbar: React.FC = () => {
               >
                 {menu}
               </Link>
-            )
-          )}
-        </nav>
+            ))}
+          </nav>
 
-        {/* Menu di mobile */}
-        <nav
-          className={`${
-            showMobileMenu ? "block" : "hidden"
-          } flex flex-col lg:hidden items-center absolute top-16 left-0 bg-white w-full shadow-lg p-4`}
-        >
-          {["Home", "Category 1", "Category 2", "Category 3", "Category 4"].map(
-            (menu, index) => (
-              <Link
-                key={index}
-                to={
-                  menu === "Home"
-                    ? "/"
-                    : `/category/${menu.toLowerCase().replace(" ", "-")}`
-                }
-                className="menu-item relative inline-block px-4 py-5 w-fit"
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              >
-                {menu}
-              </Link>
-            )
-          )}
-        </nav>
-
-        {/* Bagian kanan: Login / Profil */}
-        <div className="flex items-center gap-4">
-          {!isLoggedIn ? (
-            <button
-              onClick={() => navigate("/login")}
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+          {/* Bagian kanan: Login / Profil */}
+          <div className="flex items-center gap-4">
+            <div
+              className="text-2xl bg-gray-200 rounded-full p-2 cursor-pointer"
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
-              Login
-            </button>
-          ) : (
-            <div className="relative">
-              <button
-                onClick={toggleDropdown}
-                className="flex items-center gap-2"
-              >
-                <img
-                  src={
-                    dummyUser.avatar ||
-                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                  }
-                  alt="User"
-                  className="w-8 h-8 rounded-full"
-                />
-              </button>
-
-              {/* Dropdown menu jika sudah login */}
-              {showDropdown && (
-                <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded-lg shadow-lg">
-                  <Link
-                    to="/profile"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Profil
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                  >
-                    <FaSignOutAlt className="mr-2 inline" />
-                    Logout
-                  </button>
-                </div>
-              )}
+              <GoSearch />
             </div>
-          )}
+            {!isLoggedIn ? (
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+              >
+                Login
+              </button>
+            ) : (
+              <div className="relative">
+                <button
+                  onClick={toggleDropdown}
+                  className="flex items-center gap-2"
+                >
+                  <img
+                    src={
+                      dummyUser.avatar ||
+                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                    }
+                    alt="User"
+                    className="w-8 h-8 rounded-full"
+                  />
+                </button>
+
+                {/* Dropdown menu jika sudah login */}
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded-lg shadow-lg">
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      Profil
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                    >
+                      <FaSignOutAlt className="mr-2 inline" />
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Modal Search */}
+      {isSearchOpen && (
+        <SearchModal
+          setIsSearchOpen={setIsSearchOpen}
+          handleSearchChange={handleSearchChange}
+          filteredBlogs={filteredBlogs}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
+      )}
+    </>
   );
 };
 

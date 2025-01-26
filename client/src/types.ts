@@ -18,6 +18,7 @@ export interface Reply {
   export interface Blog {
     id: string;
     title: string;
+    highlight: string;
     author: string;
     createdAt: string;
     thumbnail: string;

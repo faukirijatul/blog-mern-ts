@@ -4,6 +4,8 @@ export const blogData: Blog[] = [
   {
     id: "1",
     title: "Understanding React and TypeScript",
+    highlight:
+      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
     author: "John Doe",
     createdAt: "2025-01-20",
     category: "React",
@@ -39,10 +41,13 @@ export const blogData: Blog[] = [
   {
     id: "2",
     title: "Getting Started with Tailwind CSS",
+    highlight:
+      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
     author: "Emily Clark",
     createdAt: "2025-01-18",
     category: "CSS",
-    thumbnail: "https://media.istockphoto.com/id/1454140302/id/foto/pemandangan-indah-dari-pemandangan-indah-warna-matahari-terbenam-dan-gunung-batu.jpg?s=612x612&w=0&k=20&c=faxy8-19Js8Ve8i70wm52wVLTXRT8yJfw5BFKUpXoN0=",
+    thumbnail:
+      "https://media.istockphoto.com/id/1454140302/id/foto/pemandangan-indah-dari-pemandangan-indah-warna-matahari-terbenam-dan-gunung-batu.jpg?s=612x612&w=0&k=20&c=faxy8-19Js8Ve8i70wm52wVLTXRT8yJfw5BFKUpXoN0=",
     content: `
       <h2>Tailwind CSS: Utility-First Framework</h2>
       <p>
@@ -72,10 +77,13 @@ export const blogData: Blog[] = [
   {
     id: "3",
     title: "Mastering JavaScript ES6+ Features",
+    highlight:
+      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
     author: "Sarah Johnson",
     createdAt: "2025-01-15",
     category: "JavaScript",
-    thumbnail: "https://media.istockphoto.com/id/1437687096/id/foto/pemandangan-indah-danau-yang-tenang-dengan-pegunungan-di-latar-belakang-pada-hari-yang-cerah.jpg?s=170667a&w=0&k=20&c=iE9IDpMHkDZmdOILaR1lsFjhrTdzj246lebaZfn1YUA=",
+    thumbnail:
+      "https://media.istockphoto.com/id/1437687096/id/foto/pemandangan-indah-danau-yang-tenang-dengan-pegunungan-di-latar-belakang-pada-hari-yang-cerah.jpg?s=170667a&w=0&k=20&c=iE9IDpMHkDZmdOILaR1lsFjhrTdzj246lebaZfn1YUA=",
     content: `
       <h2>JavaScript ES6+ Features You Should Know</h2>
       <p>
@@ -105,10 +113,13 @@ export const blogData: Blog[] = [
   {
     id: "4",
     title: "Building REST APIs with Node.js",
+    highlight:
+      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
     author: "Michael Brown",
     createdAt: "2025-01-10",
     category: "Node.js",
-    thumbnail: "https://media.istockphoto.com/id/1337141245/id/foto/matahari-terbenam-yang-kabur-di-atas-danau-mcdonald-taman-nasional-gletser.jpg?s=612x612&w=0&k=20&c=NKH0a6gWafcuHlJ1oqAJU-yUlX1tQOeEr7vdLSgqWQw=",
+    thumbnail:
+      "https://media.istockphoto.com/id/1337141245/id/foto/matahari-terbenam-yang-kabur-di-atas-danau-mcdonald-taman-nasional-gletser.jpg?s=612x612&w=0&k=20&c=NKH0a6gWafcuHlJ1oqAJU-yUlX1tQOeEr7vdLSgqWQw=",
     content: `
       <h2>Node.js and Express: The Perfect Duo</h2>
       <p>
@@ -138,10 +149,13 @@ export const blogData: Blog[] = [
   {
     id: "5",
     title: "Understanding MongoDB for Beginners",
+    highlight:
+      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
     author: "Lisa Wang",
     createdAt: "2025-01-08",
     category: "MongoDB",
-    thumbnail: "https://images.pexels.com/photos/414523/pexels-photo-414523.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    thumbnail:
+      "https://images.pexels.com/photos/414523/pexels-photo-414523.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
     content: `
       <h2>Introduction to MongoDB</h2>
       <p>
@@ -171,10 +185,157 @@ export const blogData: Blog[] = [
   {
     id: "6",
     title: "Introduction to Next.js Framework",
+    highlight:
+      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
     author: "David Green",
     createdAt: "2025-01-05",
     category: "Next.js",
-    thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUPIfiGgUML8G3ZqsNLHfaCnZK3I5g4tJabQ&s",
+    thumbnail:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUPIfiGgUML8G3ZqsNLHfaCnZK3I5g4tJabQ&s",
+    content: `
+      <h2>Why Choose Next.js?</h2>
+      <p>
+        Next.js is a React-based framework that supports server-side rendering, static site generation, and other modern features.
+      </p>
+    `,
+    likes: 130,
+    comments: [
+      {
+        id: "c6",
+        user: "Emily Clark",
+        text: "This article gave me the confidence to start using Next.js!",
+        createdAt: "2025-01-06T10:00:00Z",
+        likes: 22,
+        replies: [
+          {
+            id: "r6",
+            user: "David Green",
+            text: "That's great to hear, Emily! Best of luck with your projects.",
+            createdAt: "2025-01-06T10:30:00Z",
+            likes: 6,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "7",
+    title: "Introduction to Next.js Framework",
+    highlight:
+      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+    author: "David Green",
+    createdAt: "2025-01-05",
+    category: "Next.js",
+    thumbnail:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUPIfiGgUML8G3ZqsNLHfaCnZK3I5g4tJabQ&s",
+    content: `
+      <h2>Why Choose Next.js?</h2>
+      <p>
+        Next.js is a React-based framework that supports server-side rendering, static site generation, and other modern features.
+      </p>
+    `,
+    likes: 130,
+    comments: [
+      {
+        id: "c6",
+        user: "Emily Clark",
+        text: "This article gave me the confidence to start using Next.js!",
+        createdAt: "2025-01-06T10:00:00Z",
+        likes: 22,
+        replies: [
+          {
+            id: "r6",
+            user: "David Green",
+            text: "That's great to hear, Emily! Best of luck with your projects.",
+            createdAt: "2025-01-06T10:30:00Z",
+            likes: 6,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "8",
+    title: "Introduction to Next.js Framework",
+    highlight:
+      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+    author: "David Green",
+    createdAt: "2025-01-05",
+    category: "Next.js",
+    thumbnail:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUPIfiGgUML8G3ZqsNLHfaCnZK3I5g4tJabQ&s",
+    content: `
+      <h2>Why Choose Next.js?</h2>
+      <p>
+        Next.js is a React-based framework that supports server-side rendering, static site generation, and other modern features.
+      </p>
+    `,
+    likes: 130,
+    comments: [
+      {
+        id: "c6",
+        user: "Emily Clark",
+        text: "This article gave me the confidence to start using Next.js!",
+        createdAt: "2025-01-06T10:00:00Z",
+        likes: 22,
+        replies: [
+          {
+            id: "r6",
+            user: "David Green",
+            text: "That's great to hear, Emily! Best of luck with your projects.",
+            createdAt: "2025-01-06T10:30:00Z",
+            likes: 6,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "9",
+    title: "Introduction to Next.js Framework",
+    highlight:
+      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+    author: "David Green",
+    createdAt: "2025-01-05",
+    category: "Next.js",
+    thumbnail:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUPIfiGgUML8G3ZqsNLHfaCnZK3I5g4tJabQ&s",
+    content: `
+      <h2>Why Choose Next.js?</h2>
+      <p>
+        Next.js is a React-based framework that supports server-side rendering, static site generation, and other modern features.
+      </p>
+    `,
+    likes: 130,
+    comments: [
+      {
+        id: "c6",
+        user: "Emily Clark",
+        text: "This article gave me the confidence to start using Next.js!",
+        createdAt: "2025-01-06T10:00:00Z",
+        likes: 22,
+        replies: [
+          {
+            id: "r6",
+            user: "David Green",
+            text: "That's great to hear, Emily! Best of luck with your projects.",
+            createdAt: "2025-01-06T10:30:00Z",
+            likes: 6,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "10",
+    title: "Introduction to Next.js Framework",
+    highlight:
+      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+    author: "David Green",
+    createdAt: "2025-01-05",
+    category: "Next.js",
+    thumbnail:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUPIfiGgUML8G3ZqsNLHfaCnZK3I5g4tJabQ&s",
     content: `
       <h2>Why Choose Next.js?</h2>
       <p>
@@ -204,8 +365,9 @@ export const blogData: Blog[] = [
 ];
 
 export const dummyUser = {
-    id: "user1",
-    name: "John Doe",
-    email: "johndoe@example.com",
-    avatar: "https://static.republika.co.id/uploads/images/detailnews/foto-profil-_170704110636-890.jpg",
-  };
+  id: "user1",
+  name: "John Doe",
+  email: "johndoe@example.com",
+  avatar:
+    "https://static.republika.co.id/uploads/images/detailnews/foto-profil-_170704110636-890.jpg",
+};

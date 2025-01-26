@@ -5,6 +5,7 @@ import Home from "./pages/home/Home";
 import BlogList from "./pages/blogList/BlogList";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import BlogContentForm from "./pages/createBlog/BlogContentForm";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/category/:category" element={<BlogList />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin/create" element={<BlogContentForm />} />
       </Routes>
     </BrowserRouter>
   );

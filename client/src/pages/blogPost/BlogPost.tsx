@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaHeart, FaReply } from "react-icons/fa";
+import { FaBookmark, FaHeart, FaRegBookmark, FaReply } from "react-icons/fa";
 import { blogData } from "../../data/data";
 import { Blog, Comment, Reply } from "../../types";
 import { useParams } from "react-router-dom";
@@ -14,7 +14,8 @@ const BlogPost: React.FC = () => {
   const [comments, setComments] = useState<Comment[]>(
     blog ? blog.comments : []
   );
-  const [blogLikes, setBlogLikes] = useState<number>(blog ? blog.likes : 0); // Menyimpan jumlah like pada blog (inisialisasi dengan nilai likes blog.likes);
+  const [blogLikes, setBlogLikes] = useState<number>(blog ? blog.likes : 0);
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
 
   // State untuk menampilkan input balasan pada komentar yang diklik
   const [replyText, setReplyText] = useState<string>("");
@@ -125,14 +126,24 @@ const BlogPost: React.FC = () => {
           ></div>
           <div className="text-gray-600 font-medium">
             Likes: {blogLikes} | Comments: {countComments(comments)}
-            {/* Tambahkan tombol like untuk postingan */}
+            
+            <div className="flex items-center gap-2">
             <button
-              className="flex items-center gap-1 mt-2"
+              className="flex items-center gap-1 mt-2 cursor-pointer"
               onClick={handleLikeBlog}
             >
               <FaHeart className="text-red-500" />
               Like Post
             </button>
+            <button
+              className="flex items-center gap-1 mt-2 cursor-pointer"
+              onClick={() => setIsBookmarked(!isBookmarked)}
+            >
+              {isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
+              Save Post
+            </button>
+            </div>
+            
           </div>
 
           {/* Comments Section */}
