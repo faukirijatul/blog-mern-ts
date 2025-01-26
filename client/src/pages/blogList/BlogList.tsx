@@ -61,7 +61,7 @@ const BlogList: React.FC = () => {
             </div>
 
             <div className="flex justify-center mt-4">
-              <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mt-4">
+              <button className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg cursor-pointer mt-4 hover:bg-gray-100">
                 Load More
               </button>
             </div>

@@ -48,6 +48,8 @@ const Navbar: React.FC = () => {
     300
   );
 
+  const isAdmin = true;
+
   return (
     <>
       <header className="shadow px-2 md:px-8 xl:px-30 fixed top-0 left-0 right-0 z-50 bg-white">
@@ -165,6 +167,14 @@ const Navbar: React.FC = () => {
                     >
                       Profil
                     </Link>
+                    {isAdmin && (
+                      <Link
+                      to="/admin/create"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      Create Blog
+                    </Link>
+                    )}
                     <button
                       onClick={handleLogout}
                       className="block w-full px-4 py-2 text-left hover:bg-gray-100"

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { IoMdClose } from "react-icons/io";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -63,8 +64,26 @@ const BlogContentForm: React.FC = () => {
     setBlog({ ...blog, content: value });
   };
 
+  const stripHtmlTags = (content: string) => {
+    // Hapus semua tag HTML dan trim spasi
+    return content.replace(/<\/?[^>]+(>|$)/g, "").trim();
+  };
+  
+  const isFormValid = () => {
+    return (
+      blog.title.trim() !== "" &&
+      blog.highlight.trim() !== "" &&
+      blog.category !== null &&
+      stripHtmlTags(blog.content) !== ""
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isFormValid()) {
+      toast.error("All fields are required.");
+      return;
+    }
     console.log("Blog Data:", blog);
   };
 
@@ -104,7 +123,7 @@ const BlogContentForm: React.FC = () => {
               <button
                 type="button"
                 onClick={handleReplaceThumbnail}
-                className="mt-1 block w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-2 bg-gray-200 hover:bg-gray-300"
+                className="mt-1 block w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-2 bg-gray-100 hover:bg-gray-200 cursor-pointer"
               >
                 Choose Image
               </button>
@@ -128,7 +147,6 @@ const BlogContentForm: React.FC = () => {
             onChange={handleInputChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             placeholder="Enter blog title"
-            required
           />
         </div>
 
@@ -178,14 +196,13 @@ const BlogContentForm: React.FC = () => {
             className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             rows={4}
             placeholder="Enter a pragraph to highlight and will show in blogs list"
-            required
           />
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+          className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
         >
           Save Blog
         </button>

@@ -126,24 +126,22 @@ const BlogPost: React.FC = () => {
           ></div>
           <div className="text-gray-600 font-medium">
             Likes: {blogLikes} | Comments: {countComments(comments)}
-            
             <div className="flex items-center gap-2">
-            <button
-              className="flex items-center gap-1 mt-2 cursor-pointer"
-              onClick={handleLikeBlog}
-            >
-              <FaHeart className="text-red-500" />
-              Like Post
-            </button>
-            <button
-              className="flex items-center gap-1 mt-2 cursor-pointer"
-              onClick={() => setIsBookmarked(!isBookmarked)}
-            >
-              {isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
-              Save Post
-            </button>
+              <button
+                className="flex items-center gap-1 mt-2 cursor-pointer"
+                onClick={handleLikeBlog}
+              >
+                <FaHeart className="text-red-500" />
+                Like Post
+              </button>
+              <button
+                className="flex items-center gap-1 mt-2 cursor-pointer"
+                onClick={() => setIsBookmarked(!isBookmarked)}
+              >
+                {isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
+                Save Post
+              </button>
             </div>
-            
           </div>
 
           {/* Comments Section */}
@@ -160,7 +158,7 @@ const BlogPost: React.FC = () => {
                 placeholder="Add a comment..."
               ></textarea>
               <button
-                className="mt-2 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                className="mt-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
                 onClick={handleAddComment}
               >
                 Submit
@@ -206,12 +204,23 @@ const BlogPost: React.FC = () => {
                       onChange={(e) => setReplyText(e.target.value)}
                       placeholder="Add a reply..."
                     ></textarea>
-                    <button
-                      className="mt-2 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-                      onClick={handleReply}
-                    >
-                      Submit Reply
-                    </button>
+                    <div className="flex justify-end items-center gap-2">
+                      <button
+                        className="mt-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                        onClick={handleReply}
+                      >
+                        Submit
+                      </button>
+                      <button
+                        className="mt-2 px-4 py-2 text-sm font-medium border border-red-300 rounded-lg cursor-pointer hover:bg-red-100"
+                        onClick={() => {
+                          setReplyingTo(null);
+                          setReplyText("");
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 )}
 
