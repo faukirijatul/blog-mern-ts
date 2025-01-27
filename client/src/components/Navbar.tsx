@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { blogData, dummyUser } from "../data/data";
+import { blogData } from "../data/data";
 import logo from "../assets/logo.svg";
 import { GoSearch } from "react-icons/go";
 import { Blog } from "../types";
 import debounce from "lodash.debounce";
 import SearchModal from "./SearchModal";
 import { CustomGoogleLoginButton } from "./GoogleLogin";
+import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/slices/userSlice";
 
 const Navbar: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const { user } = useSelector((state : RootState ) => state.user);
+  const dispatch : AppDispatch = useDispatch();
+
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
@@ -26,7 +32,7 @@ const Navbar: React.FC = () => {
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    dispatch(logout());
     setShowDropdown(false);
   };
 
@@ -47,8 +53,6 @@ const Navbar: React.FC = () => {
     },
     300
   );
-
-  const isAdmin = true;
 
   return (
     <>
@@ -140,17 +144,17 @@ const Navbar: React.FC = () => {
             >
               <GoSearch />
             </div>
-            {!isLoggedIn ? (
+            {!user ? (
               <CustomGoogleLoginButton />
             ) : (
               <div className="relative">
                 <button
                   onClick={toggleDropdown}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 cursor-pointer"
                 >
                   <img
                     src={
-                      dummyUser.avatar ||
+                      user && user.picture ? user.picture.url :
                       "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                     }
                     alt="User"
@@ -160,24 +164,26 @@ const Navbar: React.FC = () => {
 
                 {/* Dropdown menu jika sudah login */}
                 {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded-lg shadow-lg">
+                  <div className="absolute right-0 mt-2 w-40 bg-white text-black shadow-lg">
                     <Link
                       to="/profile"
                       className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setShowDropdown(false)}
                     >
                       Profil
                     </Link>
-                    {isAdmin && (
-                      <Link
-                      to="/admin/create"
-                      className="block px-4 py-2 hover:bg-gray-100"
+                    {user && user.role === "admin" && (
+                      <a
+                      href="/admin"
+                      className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => setShowDropdown(false)}
                     >
-                      Create Blog
-                    </Link>
+                      Admin Dashboard
+                    </a>
                     )}
                     <button
                       onClick={handleLogout}
-                      className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                      className="block w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                     >
                       <FaSignOutAlt className="mr-2 inline" />
                       Logout

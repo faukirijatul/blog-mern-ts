@@ -1,26 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IoMdClose } from "react-icons/io";
 import Select from "react-select";
 import JoditEditor from "jodit-react";
+import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../../../store/store";
+import {
+  createBlog,
+  getSingleBlog,
+  updateBlog,
+} from "../../../store/slices/blogSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 interface FormData {
   title: string;
   highlight: string;
-  category: { value: string; label: string } | null;
+  category: { value: string; label: string } | null | string;
   thumbnail: string;
   content: string;
 }
 
 const categories: { value: string; label: string }[] = [
-  { value: "nextjs", label: "Next.js" },
-  { value: "react", label: "React" },
-  { value: "nodejs", label: "Node.js" },
-  { value: "typescript", label: "TypeScript" },
-  { value: "mongo", label: "MongoDB" },
+  { value: "basics", label: "Basics" },
+  { value: "frontend", label: "Frontend" },
+  { value: "backend", label: "Backend" },
+  { value: "fullstack", label: "Fullstack" },
 ];
 
 const BlogContentForm: React.FC = () => {
+  const navigate = useNavigate();
+
+  const dispatch: AppDispatch = useDispatch();
+
   const [blog, setBlog] = useState<FormData>({
     title: "",
     highlight: "",
@@ -28,6 +40,33 @@ const BlogContentForm: React.FC = () => {
     thumbnail: "",
     content: "",
   });
+
+  const { blog: fechedBlog } = useSelector((state: RootState) => state.blog);
+
+  const { slug } = useParams();
+
+  useEffect(() => {
+    if (slug) {
+      dispatch(getSingleBlog(slug));
+    }
+  }, [slug, dispatch]);
+
+  useEffect(() => {
+    if (fechedBlog) {
+      setBlog({
+        title: fechedBlog.title,
+        highlight: fechedBlog.highlight,
+        category: {
+          value: fechedBlog.category,
+          label:
+            fechedBlog.category.charAt(0).toUpperCase() +
+            fechedBlog.category.slice(1),
+        },
+        thumbnail: fechedBlog.thumbnail.url,
+        content: fechedBlog.content,
+      });
+    }
+  }, [fechedBlog]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -82,7 +121,35 @@ const BlogContentForm: React.FC = () => {
       toast.error("All fields are required.");
       return;
     }
-    console.log("Blog Data:", blog);
+
+    const transformedData = {
+      ...blog,
+      category:
+        typeof blog.category === "object" && blog.category !== null
+          ? blog.category.value
+          : "",
+      thumbnail: blog.thumbnail.startsWith("https") ? "" : blog.thumbnail,
+    };
+
+    if (slug) {
+      dispatch(updateBlog({ data: transformedData, slug })).then((res) => {
+        if (res.meta.requestStatus === "fulfilled") {
+          navigate(`/admin/edit/${res.payload.blog.slug}`);
+        }
+      })
+    } else {
+      dispatch(createBlog(transformedData)).then((res) => {
+        if (res.meta.requestStatus === "fulfilled") {
+          setBlog({
+            title: "",
+            highlight: "",
+            category: null,
+            thumbnail: "",
+            content: "",
+          });
+        }
+      });
+    }
   };
 
   return (

@@ -1,6 +1,9 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store/store";
+import { login } from "../store/slices/userSlice";
 
 const fetchGoogleUserInfo = async (accessToken: string) => {
   try {
@@ -26,6 +29,7 @@ const fetchGoogleUserInfo = async (accessToken: string) => {
 };
 
 export const CustomGoogleLoginButton = () => {
+  const dispatch : AppDispatch = useDispatch();
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (response) => {
       const accessToken = response.access_token;
@@ -39,7 +43,7 @@ export const CustomGoogleLoginButton = () => {
           picture: userInfo.picture,
         };
 
-        console.log(data);
+        dispatch(login(data));
       } catch (error) {
         console.error(error);
         toast.error((error as Error).message);
