@@ -29,7 +29,7 @@ const AdminLayout: React.FC = () => {
         isMobile={isMobile}
       />
       <div className={`w-full relative ${isMobile ? "ml-13" : ""}`}>
-        <div className="shadow p-4 fixed bg-white w-full flex items-center gap-10">
+        <div className="shadow p-4 fixed bg-white w-full flex items-center gap-10 z-10">
           <h1 className="text-lg font-semibold">Admin Dashboard</h1>
           <a href="/" className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-100">Home</a>
         </div>

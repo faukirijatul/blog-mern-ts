@@ -5,7 +5,7 @@ import LatestBlogsTable from "./components/LatestBlogsTable";
 
 const Dashboard : React.FC = () => {
   return (
-    <div className="w-full mx-auto px-2 md:px-6 p-6 bg-white mt-15">
+    <div className="w-full mx-auto px-2 md:px-6 p-6 bg-white mt-20">
       <DashboardCards />
       <div className="w-full flex flex-col xl:flex-row items-center gap-5 mt-10">
         <LatestUsersTable />

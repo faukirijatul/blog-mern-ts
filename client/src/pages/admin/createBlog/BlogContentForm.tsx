@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { IoMdClose } from "react-icons/io";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import Select from "react-select";
+import JoditEditor from "jodit-react";
 
 interface FormData {
   title: string;
@@ -65,10 +64,9 @@ const BlogContentForm: React.FC = () => {
   };
 
   const stripHtmlTags = (content: string) => {
-    // Hapus semua tag HTML dan trim spasi
     return content.replace(/<\/?[^>]+(>|$)/g, "").trim();
   };
-  
+
   const isFormValid = () => {
     return (
       blog.title.trim() !== "" &&
@@ -88,7 +86,7 @@ const BlogContentForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full mx-auto px-2 md:px-6 p-6 bg-white mt-13">
+    <div className="w-full mx-auto px-2 md:px-10 lg:px-20 xl:px-50 p-6 bg-white mt-20">
       <h2 className="text-2xl font-bold mb-4">Create Blog</h2>
       <form onSubmit={handleSubmit}>
         {/* Thumbnail */}
@@ -155,18 +153,15 @@ const BlogContentForm: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">
             Content
           </label>
-          <ReactQuill
-            theme="snow"
+          <JoditEditor
             value={blog.content}
             onChange={handleContentChange}
             className="mt-1"
-            placeholder="Write your blog content here..."
-            style={{ height: "300px" }}
           />
         </div>
 
         {/* Category */}
-        <div className="mb-4 mt-14">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
             Category
           </label>
@@ -195,7 +190,7 @@ const BlogContentForm: React.FC = () => {
             onChange={handleInputChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             rows={4}
-            placeholder="Enter a pragraph to highlight and will show in blogs list"
+            placeholder="Enter a paragraph to highlight"
           />
         </div>
 
