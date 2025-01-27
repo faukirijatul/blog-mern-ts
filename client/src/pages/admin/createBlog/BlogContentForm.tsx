@@ -88,7 +88,7 @@ const BlogContentForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white mt-20">
+    <div className="w-full mx-auto px-2 md:px-6 p-6 bg-white mt-13">
       <h2 className="text-2xl font-bold mb-4">Create Blog</h2>
       <form onSubmit={handleSubmit}>
         {/* Thumbnail */}
