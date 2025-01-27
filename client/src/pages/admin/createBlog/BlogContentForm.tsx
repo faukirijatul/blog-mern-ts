@@ -12,6 +12,7 @@ import {
 } from "../../../store/slices/blogSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { FaSpinner } from "react-icons/fa";
 
 interface FormData {
   title: string;
@@ -41,7 +42,7 @@ const BlogContentForm: React.FC = () => {
     content: "",
   });
 
-  const { blog: fechedBlog } = useSelector((state: RootState) => state.blog);
+  const { blog: fechedBlog, createBlogLoading, updateBlogLoading } = useSelector((state: RootState) => state.blog);
 
   const { slug } = useParams();
 
@@ -264,9 +265,12 @@ const BlogContentForm: React.FC = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
         >
-          Save Blog
+          {
+            createBlogLoading || updateBlogLoading && <FaSpinner className="animate-spin" />
+          } 
+          <span>Save Blog</span>
         </button>
       </form>
     </div>
