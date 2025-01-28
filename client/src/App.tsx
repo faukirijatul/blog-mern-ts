@@ -3,8 +3,6 @@ import BlogPost from "./pages/blogPost/BlogPost";
 import Navbar from "./components/Navbar";
 import Home from "./pages/home/Home";
 import BlogList from "./pages/blogList/BlogList";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
 import BlogContentForm from "./pages/admin/createBlog/BlogContentForm";
 import AdminLayout from "./pages/admin/AdminLayout";
 import Dashboard from "./pages/admin/dashboard/Dashboard";
@@ -36,8 +34,6 @@ function App() {
         <Route path="/blog" element={<Navigate to="/" />} />
         <Route path="/blog/:blogId" element={<BlogPost />} />
         <Route path="/category/:category" element={<BlogList />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
