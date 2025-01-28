@@ -184,7 +184,7 @@ const BlogPost: React.FC = () => {
                 <div key={comment._id} className="mb-6">
                   <div className="flex items-center gap-2">
                     <img
-                      src={comment.user?.picture?.url}
+                      src={comment.user.picture?.url}
                       alt={comment.user.name}
                       className="w-6 h-6 rounded-full border border-gray-300"
                     />
