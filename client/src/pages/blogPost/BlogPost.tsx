@@ -1,258 +1,337 @@
 import React, { useEffect, useState } from "react";
-import { FaBookmark, FaHeart, FaRegBookmark, FaReply } from "react-icons/fa";
-import { blogData } from "../../data/data";
-import { Blog, Comment, Reply } from "../../types";
+import {
+  FaBookmark,
+  FaHeart,
+  FaRegBookmark,
+  FaRegHeart,
+  FaReply,
+  FaTrash,
+} from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import LoadingPost from "../../components/LoadingPost";
-import { countComments } from "../../helper/countComments";
 import Footer from "../../components/Footer";
+import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
+import {
+  addComment,
+  addReply,
+  deleteComment,
+  deleteReply,
+  getSingleBlog,
+  likeBlog,
+  likeComment,
+  likeReply,
+  unlikeBlog,
+  unlikeComment,
+  unlikeReply,
+} from "../../store/slices/blogSlice";
+import { useSelector } from "react-redux";
+import { saveBlog, unsaveBlog } from "../../store/slices/userSlice";
+import { formatDate } from "../../helper/formatDate";
+import { calculateTotalCommentsAndReplies } from "../../helper/calculateTotalCommentsAndReplies";
 
 const BlogPost: React.FC = () => {
-  const { blogId } = useParams<{ blogId: string }>();
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [newComment, setNewComment] = useState<string>("");
-  const [comments, setComments] = useState<Comment[]>(
-    blog ? blog.comments : []
+  const { slug } = useParams<{ slug: string }>();
+
+  const dispatch: AppDispatch = useDispatch();
+
+  const { blog, getSingleBlogLoading } = useSelector(
+    (state: RootState) => state.blog
   );
-  const [blogLikes, setBlogLikes] = useState<number>(blog ? blog.likes : 0);
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const { user } = useSelector((state: RootState) => state.user);
 
-  // State untuk menampilkan input balasan pada komentar yang diklik
+  console.log(blog);
+
+  const [newComment, setNewComment] = useState<string>("");
   const [replyText, setReplyText] = useState<string>("");
-  const [replyingTo, setReplyingTo] = useState<string | null>(null); // Menyimpan id komentar yang sedang dibalas
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
 
-  // Ambil data blog berdasarkan ID dari URL
   useEffect(() => {
-    if (blogId) {
-      const foundBlog = blogData.find((blog) => blog.id === blogId); // Temukan blog berdasarkan ID
-      if (foundBlog) {
-        setBlog(foundBlog);
-        setComments(foundBlog.comments);
-        setBlogLikes(foundBlog.likes);
-      }
+    if (slug) {
+      dispatch(getSingleBlog(slug));
     }
-  }, [blogId]);
+  }, [slug, dispatch]);
 
   const handleAddComment = () => {
     if (newComment.trim() !== "") {
-      const newCommentData: Comment = {
-        id: `c${comments.length + 1}`,
-        user: "Anonymous User",
-        text: newComment,
-        createdAt: new Date().toISOString(),
-        likes: 0,
-        replies: [],
-      };
-      setComments((prev) => [...prev, newCommentData]);
+      dispatch(addComment({ blogId: blog?._id as string, text: newComment }));
       setNewComment("");
     }
   };
 
   const handleLikeComment = (commentId: string) => {
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === commentId
-          ? { ...comment, likes: comment.likes + 1 }
-          : comment
-      )
-    );
+    dispatch(likeComment({ blogId: blog?._id as string, commentId }));
   };
 
-  // Fungsi untuk menambahkan balasan pada komentar
-  const handleReply = () => {
-    if (replyText.trim() !== "" && replyingTo) {
-      const newReply: Reply = {
-        id: `r${Date.now()}`,
-        user: "Anonymous User",
-        text: replyText,
-        createdAt: new Date().toISOString(),
-        likes: 0,
-      };
+  const handleUnlikeComment = (commentId: string) => {
+    dispatch(unlikeComment({ blogId: blog?._id as string, commentId }));
+  };
 
-      setComments((prev) =>
-        prev.map((comment) =>
-          comment.id === replyingTo
-            ? { ...comment, replies: [...comment.replies, newReply] }
-            : comment
-        )
-      );
-      setReplyText(""); // Resetkan input setelah reply
-      setReplyingTo(null); // Hapus komentar yang sedang dibalas
+  const handleReply = (commentId: string) => {
+    if (replyText.trim() !== "" && replyingTo) {
+      dispatch(
+        addReply({ blogId: blog?._id as string, commentId, text: replyText })
+      ).then(() => {
+        setReplyText("");
+        setReplyingTo(null);
+      });
     }
   };
 
-  const handleLikeReply = (commentId: string, replyId: string) => {
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              replies: comment.replies.map((reply: Reply) =>
-                reply.id === replyId
-                  ? { ...reply, likes: reply.likes + 1 }
-                  : reply
-              ),
-            }
-          : comment
-      )
-    );
+  const handleLikeReply = (replyId: string) => {
+    dispatch(likeReply({ blogId: blog?._id as string, replyId }));
   };
 
-  // Fungsi untuk menambahkan like pada postingan blog
+  const handleUnlikeReply = (replyId: string) => {
+    dispatch(unlikeReply({ blogId: blog?._id as string, replyId }));
+  };
+
   const handleLikeBlog = () => {
-    setBlogLikes(blogLikes + 1); // Menambahkan 1 like pada blog
+    dispatch(likeBlog(slug as string));
   };
 
-  if (!blog) return <LoadingPost />;
+  const handleUnlikeBlog = () => {
+    dispatch(unlikeBlog(slug as string));
+  };
+
+  const handleSaveBlog = (blogId: string) => {
+    dispatch(saveBlog(blogId));
+  };
+
+  const handleUnsaveBlog = (blogId: string) => {
+    dispatch(unsaveBlog(blogId));
+  };
+
+  if (getSingleBlogLoading) return <LoadingPost />;
 
   return (
     <>
-      <div className="max-w-4xl mx-auto p-4 mt-20">
-        {/* Blog Content */}
-
-        <div key={blog.id} className="mb-10">
-          <img
-            src={blog.thumbnail}
-            alt={blog.title}
-            className="w-full h-64 object-cover rounded-lg mb-4"
-          />
-          <h1 className="text-2xl font-bold mb-2">{blog.title}</h1>
-          <p className="text-gray-500 mb-4">
-            By {blog.author} | {new Date(blog.createdAt).toLocaleDateString()}
-          </p>
-          <div
-            className="prose prose-sm md:prose-base lg:prose-lg mb-6 text-justify leading-relaxed space-y-4"
-            dangerouslySetInnerHTML={{ __html: blog.content }}
-          ></div>
-          <div className="text-gray-600 font-medium">
-            Likes: {blogLikes} | Comments: {countComments(comments)}
-            <div className="flex items-center gap-2">
-              <button
-                className="flex items-center gap-1 mt-2 cursor-pointer"
-                onClick={handleLikeBlog}
-              >
-                <FaHeart className="text-red-500" />
-                Like Post
-              </button>
-              <button
-                className="flex items-center gap-1 mt-2 cursor-pointer"
-                onClick={() => setIsBookmarked(!isBookmarked)}
-              >
-                {isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
-                Save Post
-              </button>
-            </div>
-          </div>
-
-          {/* Comments Section */}
-          <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">Comments</h2>
-
-            {/* Add Comment */}
-            <div className="mb-4">
-              <textarea
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400"
-                rows={3}
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Add a comment..."
-              ></textarea>
-              <button
-                className="mt-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
-                onClick={handleAddComment}
-              >
-                Submit
-              </button>
-            </div>
-
-            {/* Comments List */}
-            {comments.map((comment) => (
-              <div key={comment.id} className="mb-6">
-                <div className="flex items-center gap-2">
-                  <strong>{comment.user}</strong>
-                  <span className="text-gray-500 text-sm">
-                    {new Date(comment.createdAt).toLocaleString()}
-                  </span>
-                </div>
-                <p className="text-gray-700 mt-1">{comment.text}</p>
-                <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
+      {blog && (
+        <div className="max-w-4xl mx-auto p-4 mt-20">
+          {/* Blog Content */}
+          <div key={blog._id} className="mb-10">
+            <img
+              src={blog.thumbnail?.url}
+              alt={blog.title}
+              className="w-full h-64 object-cover rounded-lg mb-4"
+            />
+            <h1 className="text-2xl font-bold mb-2">{blog.title}</h1>
+            <p className="text-gray-500 mb-4">
+              By {blog.author?.name} | {formatDate(blog.createdAt)}
+            </p>
+            <div
+              className="prose prose-sm md:prose-base lg:prose-lg mb-6 text-justify leading-relaxed space-y-4"
+              dangerouslySetInnerHTML={{ __html: blog.content }}
+            ></div>
+            <div className="text-gray-600 font-medium">
+              {blog.likes?.length} Likes .{" "}
+              {calculateTotalCommentsAndReplies(blog.comments)} Comments .{" "}
+              {blog.views} Views
+              <div className="flex items-center gap-2 mt-2">
+                {user &&
+                Array.isArray(blog.likes) &&
+                blog.likes.some((like) => like.email === user.email) ? (
                   <button
-                    className="flex items-center gap-1"
-                    onClick={() => handleLikeComment(comment.id)}
+                    className="flex items-center gap-1 cursor-pointer"
+                    onClick={handleUnlikeBlog}
                   >
-                    <FaHeart className="text-red-500" />
-                    {comment.likes} Likes
+                    <FaHeart className="text-red-500" /> Unlike
                   </button>
+                ) : (
                   <button
-                    className="flex items-center gap-1"
-                    onClick={() => {
-                      setReplyingTo(comment.id); // Menyimpan id komentar yang sedang dibalas
-                    }}
+                    className="flex items-center gap-1 cursor-pointer"
+                    onClick={handleLikeBlog}
                   >
-                    <FaReply />
-                    Reply
+                    <FaRegHeart /> Like
                   </button>
-                </div>
-
-                {/* Input balasan jika tombol reply diklik */}
-                {replyingTo === comment.id && (
-                  <div className="mt-4">
-                    <textarea
-                      className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                      rows={3}
-                      value={replyText}
-                      onChange={(e) => setReplyText(e.target.value)}
-                      placeholder="Add a reply..."
-                    ></textarea>
-                    <div className="flex justify-end items-center gap-2">
-                      <button
-                        className="mt-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
-                        onClick={handleReply}
-                      >
-                        Submit
-                      </button>
-                      <button
-                        className="mt-2 px-4 py-2 text-sm font-medium border border-red-300 rounded-lg cursor-pointer hover:bg-red-100"
-                        onClick={() => {
-                          setReplyingTo(null);
-                          setReplyText("");
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
                 )}
-
-                {/* Replies */}
-                {comment.replies.map((reply: Reply) => (
-                  <div
-                    key={reply.id}
-                    className="ml-6 mt-4 border-l pl-4 border-gray-300"
-                  >
-                    <div className="flex items-center gap-2">
-                      <strong>{reply.user}</strong>
-                      <span className="text-gray-500 text-sm">
-                        {new Date(reply.createdAt).toLocaleString()}
-                      </span>
-                    </div>
-                    <p className="text-gray-700 mt-1">{reply.text}</p>
-                    <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
-                      <button
-                        className="flex items-center gap-1"
-                        onClick={() => handleLikeReply(comment.id, reply.id)}
-                      >
-                        <FaHeart className="text-red-500" />
-                        {reply.likes} Likes
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                <button className="flex items-center gap-1 cursor-pointer">
+                  {user &&
+                  user.savedBlogs &&
+                  user.savedBlogs.includes(blog._id) ? (
+                    <FaBookmark onClick={() => handleUnsaveBlog(blog._id)} />
+                  ) : (
+                    <FaRegBookmark onClick={() => handleSaveBlog(blog._id)} />
+                  )}
+                  Save Post
+                </button>
               </div>
-            ))}
+            </div>
+
+            {/* Comments Section */}
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold mb-4">Comments</h2>
+
+              {/* Add Comment */}
+              <div className="mb-4">
+                <textarea
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400"
+                  rows={3}
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Add a comment..."
+                ></textarea>
+                <button
+                  className="mt-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                  onClick={handleAddComment} // oke
+                >
+                  Submit
+                </button>
+              </div>
+
+              {/* Comments List */}
+              {blog.comments?.map((comment) => (
+                <div key={comment._id} className="mb-6">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={comment.user?.picture?.url}
+                      alt={comment.user.name}
+                      className="w-6 h-6 rounded-full border border-gray-300"
+                    />
+                    <strong>{comment.user.name}</strong>
+                    <span className="text-gray-500 text-sm">
+                      {formatDate(comment.createdAt)}
+                    </span>
+                  </div>
+                  <p className="text-gray-700 mt-1">{comment.text}</p>
+                  <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
+                    <button className="flex items-center gap-1">
+                      {user &&
+                      Array.isArray(comment.likes) &&
+                      comment.likes.some(
+                        (like) => like.email === user.email
+                      ) ? (
+                        <FaHeart
+                          className="text-red-500 cursor-pointer"
+                          onClick={() => handleUnlikeComment(comment._id)}
+                        />
+                      ) : (
+                        <FaRegHeart
+                          className="cursor-pointer"
+                          onClick={() => handleLikeComment(comment._id)}
+                        />
+                      )}
+                      {comment.likes?.length}
+                    </button>
+                    <button
+                      className="flex items-center gap-1 cursor-pointer"
+                      onClick={() => {
+                        setReplyingTo(comment._id);
+                      }}
+                    >
+                      <FaReply />
+                      Reply
+                    </button>
+                    {comment.user._id === user?._id && (
+                      <button
+                        className="flex items-center gap-1 cursor-pointer"
+                        onClick={() =>
+                          dispatch(
+                            deleteComment({
+                              blogId: blog._id as string,
+                              commentId: comment._id,
+                            })
+                          )
+                        }
+                      >
+                        <FaTrash /> Delete
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Input balasan jika tombol reply diklik */}
+                  {replyingTo === comment._id && (
+                    <div className="mt-4">
+                      <textarea
+                        className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        rows={3}
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        placeholder="Add a reply..."
+                      ></textarea>
+                      <div className="flex justify-end items-center gap-2">
+                        <button
+                          className="mt-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                          onClick={() => handleReply(comment._id)}
+                        >
+                          Submit
+                        </button>
+                        <button
+                          className="mt-2 px-4 py-2 text-sm font-medium border border-red-300 rounded-lg cursor-pointer hover:bg-red-100"
+                          onClick={() => {
+                            setReplyingTo(null);
+                            setReplyText("");
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Replies */}
+                  {comment.replies &&
+                    comment.replies.map((reply) => (
+                      <div
+                        key={reply._id}
+                        className="ml-6 mt-4 border-l pl-4 border-gray-300"
+                      >
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={reply.user?.picture?.url}
+                            alt={reply.user.name}
+                            className="w-6 h-6 rounded-full border border-gray-300"
+                          />
+                          <strong>{reply.user.name}</strong>
+                          <span className="text-gray-500 text-sm">
+                            {formatDate(reply.createdAt)}
+                          </span>
+                        </div>
+                        <p className="text-gray-700 mt-1">{reply.text}</p>
+                        <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
+                          <button className="flex items-center gap-1">
+                            {user &&
+                            Array.isArray(reply.likes) &&
+                            reply.likes.some(
+                              (like) => like.email === user.email
+                            ) ? (
+                              <FaHeart
+                                className="text-red-500 cursor-pointer"
+                                onClick={() => handleUnlikeReply(reply._id)}
+                              />
+                            ) : (
+                              <FaRegHeart
+                                className="cursor-pointer"
+                                onClick={() => handleLikeReply(reply._id)}
+                              />
+                            )}
+                            {reply.likes?.length}
+                          </button>
+                          {reply.user._id === user?._id && (
+                            <button
+                              className="flex items-center gap-1 cursor-pointer"
+                              onClick={() =>
+                                dispatch(
+                                  deleteReply({
+                                    blogId: blog._id as string,
+                                    commentId: comment._id,
+                                    replyId: reply._id,
+                                  })
+                                )
+                              }
+                            >
+                              <FaTrash /> Delete
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <Footer />
     </>

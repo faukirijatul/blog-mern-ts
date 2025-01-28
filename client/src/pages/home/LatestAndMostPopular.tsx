@@ -1,7 +1,7 @@
 import React from "react";
 import { blogData } from "../../data/data";
-import { countComments } from "../../helper/countComments";
 import { useNavigate } from "react-router-dom";
+import { calculateTotalCommentsAndReplies } from "../../helper/calculateTotalCommentsAndReplies";
 
 const LatestAndMostPopular: React.FC = () => {
   // Sorting untuk menentukan Most Popular
@@ -41,7 +41,7 @@ const LatestAndMostPopular: React.FC = () => {
                     {blog.title}
                   </h4>
                   <p className="text-gray-500 text-sm">
-                    By {blog.author} - {countComments(blog.comments)} Comments
+                    By {blog.author} - {calculateTotalCommentsAndReplies(blog.comments)} Comments
                   </p>
                   <p className="text-gray-500 text-sm">{blog.likes} Likes</p>
                 </div>

@@ -23,6 +23,8 @@ export interface UserState {
   loginLoading: boolean;
   logoutLoading: boolean;
   currentUserLoading: boolean;
+  saveBlogLoading: boolean;
+  unsaveBlogLoading: boolean;
 }
 
 const initialState: UserState = {
@@ -31,6 +33,8 @@ const initialState: UserState = {
   loginLoading: false,
   logoutLoading: false,
   currentUserLoading: false,
+  saveBlogLoading: false,
+  unsaveBlogLoading: false,
 };
 
 interface userData {
@@ -106,6 +110,52 @@ export const currentUser = createAsyncThunk("user/currentUser", async () => {
   }
 });
 
+export const saveBlog = createAsyncThunk("user/saveBlog", async (blogId: string) => {
+  try {
+    const response = await axios.get(`${API_BASE}/api/v1/users/save/${blogId}`, {
+      withCredentials: true,
+    });
+    if (response.data.success) {
+      return response.data;
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      toast.error(error.response?.data?.message || "An unknown error occurred");
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred"
+      );
+    } else {
+      toast.error("An unknown error occurred");
+      throw new Error("An unknown error occurred");
+    }
+  }
+});
+
+export const unsaveBlog = createAsyncThunk("user/unsaveBlog", async (blogId: string) => {
+  try {
+    const response = await axios.get(`${API_BASE}/api/v1/users/unsave/${blogId}`, {
+      withCredentials: true,
+    });
+    if (response.data.success) {
+      return response.data;
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      toast.error(error.response?.data?.message || "An unknown error occurred");
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred"
+      );
+    } else {
+      toast.error("An unknown error occurred");
+      throw new Error("An unknown error occurred");
+    }
+  }
+});
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -144,7 +194,27 @@ const userSlice = createSlice({
       })
       .addCase(currentUser.rejected, (state) => {
         state.currentUserLoading = false;
-      });
+      })
+      .addCase(saveBlog.pending, (state) => {
+        state.saveBlogLoading = true;
+      })
+      .addCase(saveBlog.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.saveBlogLoading = false;
+      })
+      .addCase(saveBlog.rejected, (state) => {
+        state.saveBlogLoading = false;
+      })
+      .addCase(unsaveBlog.pending, (state) => {
+        state.unsaveBlogLoading = true;
+      })
+      .addCase(unsaveBlog.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.unsaveBlogLoading = false;
+      })
+      .addCase(unsaveBlog.rejected, (state) => {
+        state.unsaveBlogLoading = false;
+      })
   },
 });
 

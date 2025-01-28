@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
 export interface IReply {
+    _id?: mongoose.Schema.Types.ObjectId;
     comment: mongoose.Schema.Types.ObjectId;
     user: mongoose.Schema.Types.ObjectId;
     text: string;
-    likes: number;
+    likes: mongoose.Schema.Types.ObjectId[];
 }
 
 const replySchema : mongoose.Schema<IReply> = new mongoose.Schema({
@@ -19,7 +20,7 @@ const replySchema : mongoose.Schema<IReply> = new mongoose.Schema({
         required: true,
     },
     text: { type: String, required: true },
-    likes: { type: Number, default: 0 },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 }, {
     timestamps: true
 });

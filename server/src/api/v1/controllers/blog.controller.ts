@@ -19,13 +19,27 @@ export const populateBlog = async (slug: string) => {
           select: "name email picture.url",
         },
         {
+          path: "likes",
+          select: "name email picture.url",
+        },
+        {
           path: "replies",
-          populate: {
-            path: "user",
-            select: "name email picture.url",
-          },
+          populate: [
+            {
+              path: "user",
+              select: "name email picture.url",
+            },
+            {
+              path: "likes",
+              select: "name email picture.url",
+            },
+          ],
         },
       ],
+    })
+    .populate({
+      path: "likes",
+      select: "name email picture.url",
     });
 };
 
@@ -103,34 +117,6 @@ export const createBlog = async (req: any, res: Response): Promise<any> => {
     return res.status(500).json({
       success: false,
       message: "Failed to create blog",
-    });
-  }
-};
-
-// get blog by slug
-export const getBlogBySlug = async (req: any, res: Response): Promise<any> => {
-  try {
-    const { slug } = req.params;
-
-    const blog = await populateBlog(slug);
-
-    if (!blog) {
-      return res.status(404).json({
-        success: false,
-        message: "Blog not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Blog fetched successfully",
-      blog,
-    });
-  } catch (error) {
-    console.log("Error in get blog by slug controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to get blog",
     });
   }
 };
@@ -216,3 +202,125 @@ export const updateBlogBySlug = async (
     });
   }
 };
+
+// get blog by slug
+export const getBlogBySlug = async (req: any, res: Response): Promise<any> => {
+  try {
+    const { slug } = req.params;
+
+    const blog = await populateBlog(slug);
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+
+    blog.views += 1;
+    await blog.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Blog fetched successfully",
+      blog,
+    });
+  } catch (error) {
+    console.log("Error in get blog by slug controller: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get blog",
+    });
+  }
+};
+
+// like blog by slug online for logged in user
+export const likeBlogBySlug = async (req: any, res: Response): Promise<any> => {
+  try {
+    const { slug } = req.params;
+    const { _id } = req.user;
+
+    const blog = await Blog.findOne({ slug });
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+
+    if (blog.likes.includes(_id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Blog already liked",
+      });
+    }
+
+    blog.likes.push(_id);
+    await blog.save();
+
+    const populatedBlog = await populateBlog(slug);
+
+    return res.status(200).json({
+      success: true,
+      message: "Blog liked successfully",
+      blog: populatedBlog,
+    });
+  } catch (error) {
+    console.log("Error in like blog by slug controller: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to like blog",
+    });
+  }
+};
+
+// unlike blog by slug online for logged in user
+export const unlikeBlogBySlug = async (
+  req: any,
+  res: Response
+): Promise<any> => {
+  try {
+    const { slug } = req.params;
+    const { _id } = req.user;
+
+    const blog = await Blog.findOne({ slug });
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+
+    if (!blog.likes.includes(_id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Blog not liked",
+      });
+    }
+
+    blog.likes = blog.likes.filter((id) => id.toString() !== _id.toString());
+    await blog.save();
+
+    const populatedBlog = await populateBlog(slug);
+
+    return res.status(200).json({
+      success: true,
+      message: "Blog unliked successfully",
+      blog: populatedBlog,
+    });
+  } catch (error) {
+    console.log("Error in unlike blog by slug controller: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to unlike blog",
+    });
+  }
+};
+
+// delete blog by slug
+export const deleteBlogBySlug = async (
+  req: any,
+  res: Response
+): Promise<any> => {};

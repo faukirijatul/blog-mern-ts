@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
 export interface IComment {
+    _id?: mongoose.Schema.Types.ObjectId;
     blog: mongoose.Schema.Types.ObjectId;
     user: mongoose.Schema.Types.ObjectId;
     text: string;
-    likes: number;
+    likes: mongoose.Schema.Types.ObjectId[];
     replies?: mongoose.Schema.Types.ObjectId[];
 }
 
@@ -20,7 +21,7 @@ const commentSchema : mongoose.Schema<IComment> = new mongoose.Schema({
         required: true,
     },
     text: { type: String, required: true },
-    likes: { type: Number, default: 0 },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Reply" }],
 }, {
     timestamps: true

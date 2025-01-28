@@ -1,6 +1,8 @@
 import { deleteTokenCookie } from "../../../utils/deleteTokenCookie";
 import { setTokenCookie } from "../../../utils/setTokenCookie";
 import User from "../models/user.model";
+import Blog from "../models/blog.model";
+import { Response } from "express";
 
 interface ILoginData {
   name: string;
@@ -8,7 +10,7 @@ interface ILoginData {
   picture: string;
 }
 
-export const login = async (req: any, res: any) => {
+export const login = async (req: any, res: Response): Promise<any> => {
   try {
     const { name, email, picture } = req.body as ILoginData;
 
@@ -48,7 +50,7 @@ export const login = async (req: any, res: any) => {
   }
 };
 
-export const getCurrentUser = async (req: any, res: any) => {
+export const getCurrentUser = async (req: any, res: Response): Promise<any> => {
   try {
     const user = await User.findById(req.user._id);
 
@@ -65,7 +67,7 @@ export const getCurrentUser = async (req: any, res: any) => {
   }
 };
 
-export const logout = async (req: any, res: any) => {
+export const logout = async (req: any, res: Response): Promise<any> => {
   try {
     deleteTokenCookie(res);
 
@@ -82,7 +84,7 @@ export const logout = async (req: any, res: any) => {
   }
 };
 
-export const getAllUsers = async (req: any, res: any) => {
+export const getAllUsers = async (req: any, res: Response): Promise<any>  => {
   try {
     const users = await User.find();
 
@@ -95,6 +97,102 @@ export const getAllUsers = async (req: any, res: any) => {
     res.status(500).json({
       success: false,
       message: "Failed to get users",
+    });
+  }
+};
+
+// save blog by user
+export const saveBlog = async (req: any, res: Response): Promise<any> => {
+  try {
+    const { blogId } = req.params;
+    const { _id } = req.user;
+
+    const blog = await Blog.findById(blogId);
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+
+    const user = await User.findById(_id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.savedBlogs && user.savedBlogs.includes(blogId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Blog already saved",
+      });
+    }
+
+    user.savedBlogs && user.savedBlogs.push(blogId);
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Blog saved successfully",
+      user,
+    });
+  } catch (error) {
+    console.log("Error in save blog controller: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to save blog",
+    });
+  }
+};
+
+// unsave blog by user
+export const unsaveBlog = async (req: any, res: Response): Promise<any> => {
+  try {
+    const { blogId } = req.params;
+    const { _id } = req.user;
+
+    const blog = await Blog.findById(blogId);
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+
+    const user = await User.findById(_id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!user.savedBlogs || !user.savedBlogs.includes(blogId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Blog not saved",
+      });
+    }
+
+    user.savedBlogs = user.savedBlogs.filter((id) => id.toString() !== blogId.toString());
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Blog unsaved successfully",
+      user,
+    });
+  } catch (error) {
+    console.log("Error in unsave blog controller: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to unsave blog",
     });
   }
 };
