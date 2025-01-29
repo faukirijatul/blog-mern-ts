@@ -239,16 +239,16 @@ export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise
       },
       {
         $addFields: {
-          likesCount: { $size: "$likes" },
+          likesCount: { $size: { $ifNull: ["$likes", []] } },
           commentsCount: {
             $sum: [
-              { $size: "$comments" },
+              { $size: { $ifNull: ["$comments", []] } }, // Pastikan comments adalah array
               {
                 $sum: {
                   $map: {
-                    input: "$commentsData",
+                    input: { $ifNull: ["$commentsData", []] }, // Pastikan commentsData adalah array
                     as: "comment",
-                    in: { $size: "$$comment.replies" }
+                    in: { $size: { $ifNull: ["$$comment.replies", []] } } // Pastikan replies adalah array
                   }
                 }
               }
@@ -330,16 +330,16 @@ export const getAllBlogs = async (req: any, res: Response): Promise<any> => {
       },
       {
         $addFields: {
-          likesCount: { $size: "$likes" },
+          likesCount: { $size: { $ifNull: ["$likes", []] } },
           commentsCount: {
             $sum: [
-              { $size: "$comments" },
+              { $size: { $ifNull: ["$comments", []] } }, // Pastikan comments adalah array
               {
                 $sum: {
                   $map: {
-                    input: "$commentsData",
+                    input: { $ifNull: ["$commentsData", []] }, // Pastikan commentsData adalah array
                     as: "comment",
-                    in: { $size: "$comment.replies" }
+                    in: { $size: { $ifNull: ["$$comment.replies", []] } } // Pastikan replies adalah array
                   }
                 }
               }

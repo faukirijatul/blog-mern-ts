@@ -76,8 +76,6 @@ export interface BlogState {
   blog: IBlog | null;
   random5Blogs: IRandomBlog[];
   getRandom5BlogsLoading: boolean;
-  allBlogs: IAllBlog[];
-  getAllBlogsLoading: boolean;
   fiveLatestBlogs: IAllBlog[];
   fivePopularBlogs: IAllBlog[];
   getFiveLatestAndPopularBlogsLoading: boolean;
@@ -100,8 +98,6 @@ const initialState: BlogState = {
   blog: null,
   random5Blogs: [],
   getRandom5BlogsLoading: false,
-  allBlogs: [],
-  getAllBlogsLoading: false,
   fiveLatestBlogs: [],
   fivePopularBlogs: [],
   getFiveLatestAndPopularBlogsLoading: false,
@@ -183,27 +179,6 @@ export interface IBlogQuery {
   sortBy: string;
   order: string;
 }
-
-export const getAllBlogs = createAsyncThunk("blog/all", async (query : IBlogQuery) => {
-  try {
-    const response = await axios.get(`${API_BASE}/api/v1/blogs`, { params: query });
-    if (response.data.success) {
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
-      );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
-    }
-  }
-});
 
 // get five latest and popular
 export const getFiveLatestAndPopularBlogs = createAsyncThunk("blog/latest", async () => {
@@ -523,9 +498,8 @@ const blogSlice = createSlice({
       .addCase(createBlog.pending, (state) => {
         state.createBlogLoading = true;
       })
-      .addCase(createBlog.fulfilled, (state, action) => {
+      .addCase(createBlog.fulfilled, (state) => {
         state.createBlogLoading = false;
-        state.allBlogs = [...state.allBlogs, action.payload.blog];
       })
       .addCase(createBlog.rejected, (state) => {
         state.createBlogLoading = false;
@@ -543,16 +517,6 @@ const blogSlice = createSlice({
       .addCase(updateBlog.pending, (state) => {
         state.updateBlogLoading = true;
       })
-      .addCase(getAllBlogs.pending, (state) => {
-        state.getAllBlogsLoading = true;
-      })
-      .addCase(getAllBlogs.fulfilled, (state, action) => {
-        state.getAllBlogsLoading = false;
-        state.allBlogs = action.payload.blogs;
-      })
-      .addCase(getAllBlogs.rejected, (state) => {
-        state.getAllBlogsLoading = false;
-      })
       .addCase(getFiveLatestAndPopularBlogs.pending, (state) => {
         state.getFiveLatestAndPopularBlogsLoading = true;
       })
@@ -567,12 +531,6 @@ const blogSlice = createSlice({
       .addCase(updateBlog.fulfilled, (state, action) => {
         state.updateBlogLoading = false;
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
       })
       .addCase(updateBlog.rejected, (state) => {
         state.updateBlogLoading = false;
@@ -593,12 +551,6 @@ const blogSlice = createSlice({
       .addCase(likeBlog.fulfilled, (state, action) => {
         state.likeBlogLoading = false;
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
       })
       .addCase(likeBlog.rejected, (state) => {
         state.likeBlogLoading = false;
@@ -609,12 +561,6 @@ const blogSlice = createSlice({
       .addCase(unlikeBlog.fulfilled, (state, action) => {
         state.unlikeBlogLoading = false;
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
       })
       .addCase(unlikeBlog.rejected, (state) => {
         state.unlikeBlogLoading = false;
@@ -626,12 +572,6 @@ const blogSlice = createSlice({
         state.addCommentLoading = false;
         console.log(action.payload.blog);
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
       })
       .addCase(addComment.rejected, (state) => {
         state.addCommentLoading = false;
@@ -642,12 +582,6 @@ const blogSlice = createSlice({
       .addCase(likeComment.fulfilled, (state, action) => {
         state.likeCommentLoading = false;
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
       })
       .addCase(likeComment.rejected, (state) => {
         state.likeCommentLoading = false;
@@ -658,12 +592,6 @@ const blogSlice = createSlice({
       .addCase(unlikeComment.fulfilled, (state, action) => {
         state.unlikeCommentLoading = false;
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
       })
       .addCase(unlikeComment.rejected, (state) => {
         state.unlikeCommentLoading = false;
@@ -674,13 +602,7 @@ const blogSlice = createSlice({
       .addCase(deleteComment.fulfilled, (state, action) => {
         state.deleteCommentLoading = false;
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
-      })
+  })
       .addCase(deleteComment.rejected, (state) => {
         state.deleteCommentLoading = false;
       })
@@ -690,12 +612,6 @@ const blogSlice = createSlice({
       .addCase(addReply.fulfilled, (state, action) => {
         state.addReplyLoading = false;
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
       })
       .addCase(addReply.rejected, (state) => {
         state.addReplyLoading = false;
@@ -706,12 +622,6 @@ const blogSlice = createSlice({
       .addCase(likeReply.fulfilled, (state, action) => {
         state.likeReplyLoading = false;
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
       })
       .addCase(likeReply.rejected, (state) => {
         state.likeReplyLoading = false;
@@ -722,12 +632,6 @@ const blogSlice = createSlice({
       .addCase(unlikeReply.fulfilled, (state, action) => {
         state.unlikeReplyLoading = false;
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
       })
       .addCase(unlikeReply.rejected, (state) => {
         state.unlikeReplyLoading = false;
@@ -738,12 +642,6 @@ const blogSlice = createSlice({
       .addCase(deleteReply.fulfilled, (state, action) => {
         state.deleteReplyLoading = false;
         state.blog = action.payload.blog;
-        state.allBlogs = state.allBlogs.map((blog) => {
-          if (blog._id === action.payload.blog._id) {
-            return action.payload.blog;
-          }
-          return blog;
-        })
       })
       .addCase(deleteReply.rejected, (state) => {
         state.deleteReplyLoading = false;

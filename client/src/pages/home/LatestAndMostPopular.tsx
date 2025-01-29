@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { blogData } from "../../data/data";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../../store/store";
 import { useDispatch } from "react-redux";
