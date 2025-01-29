@@ -1,13 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Advertisement from "../../components/Advertisement";
 import { blogData } from "../../data/data";
 import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { FaRegBookmark, FaRegComment, FaRegEye, FaRegHeart } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
+import { getAllBlogs, IBlogQuery } from "../../store/slices/blogSlice";
+import { useSelector } from "react-redux";
 
 const BlogList: React.FC = () => {
   const navigate = useNavigate();
   const pathname = window.location.pathname;
+
+  const dispatch : AppDispatch = useDispatch();
+  
+  const { allBlogs } = useSelector((state : RootState) => state.blog);
+
+  const query : IBlogQuery = {
+    page: 1,
+    limit: 10,
+    search: "",
+    category: "",
+    sortBy: "createdAt",
+    order: "desc",
+  };
+
+  useEffect(() => {
+    dispatch(getAllBlogs(query));
+  }, [dispatch]);
 
   return (
     <>
@@ -21,17 +42,17 @@ const BlogList: React.FC = () => {
           <div className="flex-2">
             <h3 className="text-xl font-bold mb-4">All Blogs</h3>
             <div className="space-y-4">
-              {blogData.map((blog) => (
+              {allBlogs.map((blog) => (
                 <div
-                  key={blog.id}
+                  key={blog._id}
                   className="relative flex items-start gap-4 bg-white p-4 border border-gray-300 shadow cursor-pointer hover:bg-gray-100"
                   onClick={() => {
-                    navigate(`/blog/${blog.id}`);
+                    navigate(`/blog/${blog.slug}`);
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
                   <img
-                    src={blog.thumbnail}
+                    src={blog.thumbnail.url}
                     alt={blog.title}
                     className="w-32 h-32 object-cover"
                   />
@@ -40,7 +61,7 @@ const BlogList: React.FC = () => {
                       {blog.title}
                     </h4>
                     <div className="text-gray-500 text-sm flex items-center gap-1">
-                      By {blog.author} . {blog.comments.length} <FaRegComment /> . {blog.likes} <FaRegHeart /> . 15 <FaRegEye />
+                      By {blog.authorData.name} . {blog.commentsCount} <FaRegComment /> . {blog.likesCount} <FaRegHeart /> . {blog.views} <FaRegEye />
                     </div>
                     <p className="text-gray-900 line-clamp-3 mt-2">
                       {blog.highlight}

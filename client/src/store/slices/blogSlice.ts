@@ -55,15 +55,35 @@ export interface IRandomBlog {
   slug: string;
 }
 
+export interface IAllBlog {
+  _id: string;
+  title: string;
+  highlight: string;
+  thumbnail: {
+    url: string;
+  };
+  views: number;
+  createdAt: string;
+  slug: string;
+  authorData: {
+    name: string;
+  };
+  likesCount: number;
+  commentsCount: number;
+}
+
 export interface BlogState {
   blog: IBlog | null;
   random5Blogs: IRandomBlog[];
   getRandom5BlogsLoading: boolean;
-  allBlogs: IBlog[];
+  allBlogs: IAllBlog[];
+  getAllBlogsLoading: boolean;
+  fiveLatestBlogs: IAllBlog[];
+  fivePopularBlogs: IAllBlog[];
+  getFiveLatestAndPopularBlogsLoading: boolean;
   createBlogLoading: boolean;
   updateBlogLoading: boolean;
   getSingleBlogLoading: boolean;
-  getAllBlogsLoading: boolean;
   likeBlogLoading: boolean;
   unlikeBlogLoading: boolean;
   addCommentLoading: boolean;
@@ -81,10 +101,13 @@ const initialState: BlogState = {
   random5Blogs: [],
   getRandom5BlogsLoading: false,
   allBlogs: [],
+  getAllBlogsLoading: false,
+  fiveLatestBlogs: [],
+  fivePopularBlogs: [],
+  getFiveLatestAndPopularBlogsLoading: false,
   createBlogLoading: false,
   updateBlogLoading: false,
   getSingleBlogLoading: false,
-  getAllBlogsLoading: false,
   likeBlogLoading: false,
   unlikeBlogLoading: false,
   addCommentLoading: false,
@@ -133,6 +156,59 @@ export const createBlog = createAsyncThunk("blog/create", async (data : BlogData
 export const getRandomBlogs = createAsyncThunk("blog/random", async () => {
   try {
     const response = await axios.get(`${API_BASE}/api/v1/blogs/random`);
+    if (response.data.success) {
+      return response.data;
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      toast.error(error.response?.data?.message || "An unknown error occurred");
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred"
+      );
+    } else {
+      toast.error("An unknown error occurred");
+      throw new Error("An unknown error occurred");
+    }
+  }
+});
+
+// get all blog + query
+export interface IBlogQuery {
+  page: number;
+  limit: number;
+  search: string;
+  category: string;
+  sortBy: string;
+  order: string;
+}
+
+export const getAllBlogs = createAsyncThunk("blog/all", async (query : IBlogQuery) => {
+  try {
+    const response = await axios.get(`${API_BASE}/api/v1/blogs`, { params: query });
+    if (response.data.success) {
+      return response.data;
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      toast.error(error.response?.data?.message || "An unknown error occurred");
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred"
+      );
+    } else {
+      toast.error("An unknown error occurred");
+      throw new Error("An unknown error occurred");
+    }
+  }
+});
+
+// get five latest and popular
+export const getFiveLatestAndPopularBlogs = createAsyncThunk("blog/latest", async () => {
+  try {
+    const response = await axios.get(`${API_BASE}/api/v1/blogs/latest-and-popular`);
     if (response.data.success) {
       return response.data;
     } else {
@@ -466,6 +542,27 @@ const blogSlice = createSlice({
       })
       .addCase(updateBlog.pending, (state) => {
         state.updateBlogLoading = true;
+      })
+      .addCase(getAllBlogs.pending, (state) => {
+        state.getAllBlogsLoading = true;
+      })
+      .addCase(getAllBlogs.fulfilled, (state, action) => {
+        state.getAllBlogsLoading = false;
+        state.allBlogs = action.payload.blogs;
+      })
+      .addCase(getAllBlogs.rejected, (state) => {
+        state.getAllBlogsLoading = false;
+      })
+      .addCase(getFiveLatestAndPopularBlogs.pending, (state) => {
+        state.getFiveLatestAndPopularBlogsLoading = true;
+      })
+      .addCase(getFiveLatestAndPopularBlogs.fulfilled, (state, action) => {
+        state.getFiveLatestAndPopularBlogsLoading = false;
+        state.fiveLatestBlogs = action.payload.latestBlogs;
+        state.fivePopularBlogs = action.payload.popularBlogs;
+      })
+      .addCase(getFiveLatestAndPopularBlogs.rejected, (state) => {
+        state.getFiveLatestAndPopularBlogsLoading = false;
       })
       .addCase(updateBlog.fulfilled, (state, action) => {
         state.updateBlogLoading = false;

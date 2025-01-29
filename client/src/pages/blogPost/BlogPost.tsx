@@ -40,8 +40,6 @@ const BlogPost: React.FC = () => {
   );
   const { user } = useSelector((state: RootState) => state.user);
 
-  console.log(blog);
-
   const [newComment, setNewComment] = useState<string>("");
   const [replyText, setReplyText] = useState<string>("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);

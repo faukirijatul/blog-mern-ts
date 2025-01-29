@@ -163,6 +163,227 @@ export const getRandomBlogs = async (req: any, res: Response): Promise<any> => {
   }
 };
 
+export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise<any> => {
+  try {
+    const latestBlogs = await Blog.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "author",
+          foreignField: "_id",
+          as: "authorData"
+        }
+      },
+      { $unwind: "$authorData" },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "comments",
+          foreignField: "_id",
+          as: "commentsData"
+        }
+      },
+      {
+        $addFields: {
+          likesCount: { $size: "$likes" },
+          commentsCount: {
+            $sum: [
+              { $size: "$comments" },
+              {
+                $sum: {
+                  $map: {
+                    input: "$commentsData",
+                    as: "comment",
+                    in: { $size: "$$comment.replies" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      { $sort: { createdAt: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          title: 1,
+          slug: 1,
+          highlight: 1,
+          "authorData.name": 1,
+          "thumbnail.url": 1,
+          likesCount: 1,
+          views: 1,
+          commentsCount: 1,
+          createdAt: 1
+        }
+      }
+    ]);
+
+    const popularBlogs = await Blog.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "author",
+          foreignField: "_id",
+          as: "authorData"
+        }
+      },
+      { $unwind: "$authorData" },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "comments",
+          foreignField: "_id",
+          as: "commentsData"
+        }
+      },
+      {
+        $addFields: {
+          likesCount: { $size: "$likes" },
+          commentsCount: {
+            $sum: [
+              { $size: "$comments" },
+              {
+                $sum: {
+                  $map: {
+                    input: "$commentsData",
+                    as: "comment",
+                    in: { $size: "$$comment.replies" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      { $sort: { views: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          title: 1,
+          slug: 1,
+          highlight: 1,
+          "authorData.name": 1,
+          "thumbnail.url": 1,
+          likesCount: 1,
+          views: 1,
+          commentsCount: 1,
+          createdAt: 1
+        }
+      }
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Latest and Popular blogs fetched successfully",
+      latestBlogs,
+      popularBlogs
+    });
+  } catch (error) {
+    console.error("Error in getMultipleBlogSets controller: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch blogs"
+    });
+  }
+};
+
+// get all blogs
+export const getAllBlogs = async (req: any, res: Response): Promise<any> => {
+  try {
+    const { page = 1, limit = 10, search = "", category, sortBy = "createdAt", order = "desc" } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const sortOptions: any = {};
+    sortOptions[sortBy] = order === "desc" ? -1 : 1;
+
+    const match: any = {};
+    if (search) {
+      match.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { highlight: { $regex: search, $options: "i" } },
+        { "authorData.name": { $regex: search, $options: "i" } }
+      ];
+    }
+    if (category) {
+      match.category = category;
+    }
+
+    const blogs = await Blog.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "author",
+          foreignField: "_id",
+          as: "authorData"
+        }
+      },
+      {
+        $unwind: "$authorData"
+      },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "comments",
+          foreignField: "_id",
+          as: "commentsData"
+        }
+      },
+      {
+        $addFields: {
+          likesCount: { $size: "$likes" },
+          commentsCount: {
+            $sum: [
+              { $size: "$comments" },
+              {
+                $sum: {
+                  $map: {
+                    input: "$commentsData",
+                    as: "comment",
+                    in: { $size: "$comment.replies" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      { $match: match },
+      { $sort: sortOptions },
+      { $skip: skip },
+      { $limit: parseInt(limit) },
+      {
+        $project: {
+          title: 1,
+          slug: 1,
+          highlight: 1,
+          "authorData.name": 1,
+          "thumbnail.url": 1,
+          likesCount: 1,
+          views: 1,
+          commentsCount: 1,
+          createdAt: 1
+        }
+      }
+    ]);
+
+    const totalBlogs = await Blog.countDocuments(match);
+    
+    return res.status(200).json({
+      success: true,
+      message: "All blogs fetched successfully",
+      blogs,
+      totalPages: Math.ceil(totalBlogs / parseInt(limit)),
+      currentPage: parseInt(page)
+    });
+  } catch (error) {
+    console.error("Error in getAllBlogs controller: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch all blogs"
+    });
+  }
+};
+
 // update blog by slug
 export const updateBlogBySlug = async (
   req: any,
