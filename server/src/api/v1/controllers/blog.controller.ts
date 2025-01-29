@@ -121,6 +121,48 @@ export const createBlog = async (req: any, res: Response): Promise<any> => {
   }
 };
 
+// get 5 random blogs
+export const getRandomBlogs = async (req: any, res: Response): Promise<any> => {
+  try {
+    const blogs = await Blog.aggregate([
+      { $sample: { size: 5 } }, // Mengambil 5 data secara acak
+      {
+        $lookup: {
+          from: "users",
+          localField: "author",
+          foreignField: "_id",
+          as: "authorData"
+        }
+      },
+      {
+        $unwind: "$authorData"
+      },
+      {
+        $project: {
+          title: 1,
+          slug: 1,
+          category: 1,
+          createdAt: 1,
+          "authorData.name": 1,
+          "thumbnail.url": 1
+        }
+      }
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Random blogs fetched successfully",
+      blogs
+    });
+  } catch (error) {
+    console.error("Error in getRandomBlogs controller: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch random blogs"
+    });
+  }
+};
+
 // update blog by slug
 export const updateBlogBySlug = async (
   req: any,

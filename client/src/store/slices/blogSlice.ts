@@ -41,8 +41,24 @@ export interface IBlog {
   updatedAt: string;
 }
 
+export interface IRandomBlog {
+  _id : string;
+  title: string;
+  thumbnail : {
+    url : string;
+  };
+  category: string;
+  createdAt: string;
+  authorData: {
+    name: string;
+  };
+  slug: string;
+}
+
 export interface BlogState {
   blog: IBlog | null;
+  random5Blogs: IRandomBlog[];
+  getRandom5BlogsLoading: boolean;
   allBlogs: IBlog[];
   createBlogLoading: boolean;
   updateBlogLoading: boolean;
@@ -62,6 +78,8 @@ export interface BlogState {
 
 const initialState: BlogState = {
   blog: null,
+  random5Blogs: [],
+  getRandom5BlogsLoading: false,
   allBlogs: [],
   createBlogLoading: false,
   updateBlogLoading: false,
@@ -94,6 +112,28 @@ export const createBlog = createAsyncThunk("blog/create", async (data : BlogData
     });
     if (response.data.success) {
       toast.success(response.data.message);
+      return response.data;
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      toast.error(error.response?.data?.message || "An unknown error occurred");
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred"
+      );
+    } else {
+      toast.error("An unknown error occurred");
+      throw new Error("An unknown error occurred");
+    }
+  }
+});
+
+// get five random
+export const getRandomBlogs = createAsyncThunk("blog/random", async () => {
+  try {
+    const response = await axios.get(`${API_BASE}/api/v1/blogs/random`);
+    if (response.data.success) {
       return response.data;
     } else {
       throw new Error(response.data.message);
@@ -413,6 +453,16 @@ const blogSlice = createSlice({
       })
       .addCase(createBlog.rejected, (state) => {
         state.createBlogLoading = false;
+      })
+      .addCase(getRandomBlogs.pending, (state) => {
+        state.getRandom5BlogsLoading = true;
+      })
+      .addCase(getRandomBlogs.fulfilled, (state, action) => {
+        state.getRandom5BlogsLoading = false;
+        state.random5Blogs = action.payload.blogs;
+      })
+      .addCase(getRandomBlogs.rejected, (state) => {
+        state.getRandom5BlogsLoading = false;
       })
       .addCase(updateBlog.pending, (state) => {
         state.updateBlogLoading = true;

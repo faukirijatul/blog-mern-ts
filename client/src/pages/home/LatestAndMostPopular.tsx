@@ -71,7 +71,7 @@ const LatestAndMostPopular: React.FC = () => {
                 <div>
                   <h4 className="text-lg font-semibold">{blog.title}</h4>
                   <p className="text-gray-500 text-sm">
-                    By {blog.author} - {countComments(blog.comments)} Comments
+                    By {blog.author} - {calculateTotalCommentsAndReplies(blog.comments)} Comments
                   </p>
                   <p className="text-gray-500 text-sm">{blog.likes} Likes</p>
                 </div>
