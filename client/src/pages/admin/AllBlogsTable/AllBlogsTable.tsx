@@ -18,6 +18,7 @@ import { formatDate } from "../../../helper/formatDate";
 import { capitalizeFirstLetter } from "../../../helper/capitalizeFirstLetter";
 import { useNavigate } from "react-router-dom";
 import { API_BASE } from "../../../constans";
+import { SkeletonCard, SkeletonRow } from "./skeleton";
 
 const AllBlogsTable: React.FC = () => {
   const navigate = useNavigate();
@@ -64,8 +65,6 @@ const AllBlogsTable: React.FC = () => {
     }
     return <FaSort />;
   };
-
-  console.log(blogs);
 
   return (
     <div className="p-6">
@@ -154,7 +153,7 @@ const AllBlogsTable: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {blogs.map((blog, index) => (
+            {loading ? Array(5).fill(null).map((_, i) => <SkeletonRow key={i} />) : blogs.map((blog, index) => (
                 <tr
                   key={blog._id}
                   className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}
@@ -188,7 +187,7 @@ const AllBlogsTable: React.FC = () => {
       </div>
 
       <div className="space-y-4 lg:hidden">
-        {blogs.map((blog) => (
+      {loading ? Array(3).fill(null).map((_, i) => <SkeletonCard key={i} />) : blogs.map((blog) => (
           <div
             key={blog._id}
             className="relative flex items-start gap-4 bg-white p-4 border border-gray-300 shadow"

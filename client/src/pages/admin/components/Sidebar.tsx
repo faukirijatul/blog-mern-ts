@@ -1,6 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { FaHome, FaBlog, FaPlus, FaUsers, FaUser, FaLayerGroup, FaCog, FaSignOutAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaHome,
+  FaBlog,
+  FaPlus,
+  FaUsers,
+  FaUser,
+  FaSignOutAlt,
+  FaChevronLeft,
+  FaChevronRight,
+  FaBullhorn,
+} from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store/store";
 import { logout } from "../../../store/slices/userSlice";
@@ -13,14 +23,13 @@ interface MenuItem {
 }
 
 type Props = {
-    isExpanded: boolean;
-    setIsExpanded: (value: boolean) => void;
-    isMobile: boolean;
-}
+  isExpanded: boolean;
+  setIsExpanded: (value: boolean) => void;
+  isMobile: boolean;
+};
 
-const Sidebar: React.FC<Props> = ({isExpanded, setIsExpanded, isMobile}) => {
-
-  const dispatch : AppDispatch = useDispatch();
+const Sidebar: React.FC<Props> = ({ isExpanded, setIsExpanded, isMobile }) => {
+  const dispatch: AppDispatch = useDispatch();
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
@@ -28,19 +37,20 @@ const Sidebar: React.FC<Props> = ({isExpanded, setIsExpanded, isMobile}) => {
 
   const menuItems: MenuItem[] = [
     { name: "Dashboard", path: "/admin/dashboard", icon: <FaHome /> },
-    { name: "Blogs", path: "/admin/blogs", icon: <FaBlog /> },
     { name: "Create Blog", path: "/admin/create", icon: <FaPlus /> },
+    { name: "Blogs", path: "/admin/blogs", icon: <FaBlog /> },
     { name: "Users", path: "/admin/users", icon: <FaUsers /> },
     { name: "Profile", path: "/admin/profile", icon: <FaUser /> },
-    { name: "Layouts", path: "/admin/layouts", icon: <FaLayerGroup /> },
-    { name: "Settings", path: "/admin/settings", icon: <FaCog /> },
+    { name: "Banner Ads", path: "/admin/banner-ads", icon: <FaBullhorn /> },
   ];
 
   return (
     <div
       className={`h-screen bg-gray-800 text-white ${
         isExpanded ? "w-64" : "w-13"
-      } transition-width duration-300 flex flex-col ${isMobile ? "fixed z-60" : "sticky"} top-0 left-0`}
+      } transition-width duration-300 flex flex-col ${
+        isMobile ? "fixed z-60" : "sticky"
+      } top-0 left-0`}
     >
       <button
         className="text-xl p-4 hover:bg-gray-700 focus:outline-none"
@@ -66,12 +76,14 @@ const Sidebar: React.FC<Props> = ({isExpanded, setIsExpanded, isMobile}) => {
           </NavLink>
         ))}
         <div
-            className="flex items-center gap-4 p-4 hover:bg-gray-700 transition-colors duration-300 text-red-500 cursor-pointer"
-            onClick={() => dispatch(logout())}
-          >
-            <span className="text-xl"><FaSignOutAlt /></span>
-            {isExpanded && <span className="text-base">Logout</span>}
-          </div>
+          className="flex items-center gap-4 p-4 hover:bg-gray-700 transition-colors duration-300 text-red-500 cursor-pointer"
+          onClick={() => dispatch(logout())}
+        >
+          <span className="text-xl">
+            <FaSignOutAlt />
+          </span>
+          {isExpanded && <span className="text-base">Logout</span>}
+        </div>
       </nav>
     </div>
   );

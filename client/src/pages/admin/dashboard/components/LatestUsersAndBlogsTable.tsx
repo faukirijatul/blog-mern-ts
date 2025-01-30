@@ -27,8 +27,6 @@ const LatestUsersAndBlogsTable: React.FC = () => {
   const [latestUsers, setLatestUsers] = React.useState<ILatestUser[]>([]);
   const [latestBlogs, setLatestBlogs] = React.useState<ILatestBlog[]>([]);
 
-  console.log(latestBlogs);
-
   useEffect(() => {
     try {
       axios

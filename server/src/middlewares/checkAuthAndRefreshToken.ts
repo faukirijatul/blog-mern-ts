@@ -14,7 +14,7 @@ export const checkAuthAndRefreshToken = async (
   if (!refreshToken && !token) {
     return res.status(401).json({
       success: false,
-      message: "Unauthorized",
+      message: "You are not logged in",
     });
   }
 
@@ -38,7 +38,7 @@ export const checkAuthAndRefreshToken = async (
     } catch (error) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "You are not logged in",
       });
     }
   } else {
@@ -64,7 +64,7 @@ export const checkAuthAndRefreshToken = async (
       console.log("Error in checkAuthAndRefreshToken: ", error);
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "You are not logged in",
       });
     }
   }

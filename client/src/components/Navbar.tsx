@@ -134,7 +134,7 @@ const Navbar: React.FC = () => {
                       className="block px-4 py-2 hover:bg-gray-100"
                       onClick={() => setShowDropdown(false)}
                     >
-                      Profil
+                      Profile
                     </Link>
                     {user && user.role === "admin" && (
                       <a

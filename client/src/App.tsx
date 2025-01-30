@@ -15,11 +15,19 @@ import { AppDispatch, RootState } from "./store/store";
 import { currentUser } from "./store/slices/userSlice";
 import { addVisit } from "./store/slices/statisticSlice";
 import Profile from "./pages/profile/Profile";
+import Loading from "./components/Loading";
+
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, currentUserLoading } = useSelector((state: RootState) => state.user);
+
+  if (currentUserLoading) return <Loading />;
+  if (user && user.role !== "admin" && !currentUserLoading)  return <Navigate to="/" />;
+
+  return <>{children}</>;
+};
 
 function App() {
   const pathname = window.location.pathname;
-
-  const { user } = useSelector((state : RootState ) => state.user);
 
   const dispatch : AppDispatch = useDispatch();
 
@@ -28,7 +36,6 @@ function App() {
     dispatch(addVisit());
   }, [dispatch]);
 
-  console.log(user);
   return (
     <BrowserRouter>
       {!pathname.startsWith("/admin") && <Navbar />}
@@ -39,7 +46,7 @@ function App() {
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/category/:category" element={<BlogList />} />
         <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin/*" element={<AdminRoute><AdminLayout /></AdminRoute>}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="blogs" element={<AllBlogsTable />} />
           <Route path="create" element={<BlogContentForm />} />
