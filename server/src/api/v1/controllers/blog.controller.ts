@@ -125,7 +125,7 @@ export const createBlog = async (req: any, res: Response): Promise<any> => {
 export const getRandomBlogs = async (req: any, res: Response): Promise<any> => {
   try {
     const blogs = await Blog.aggregate([
-      { $sample: { size: 5 } }, // Mengambil 5 data secara acak
+      { $sample: { size: 5 } },
       {
         $lookup: {
           from: "users",
@@ -245,13 +245,13 @@ export const getLatestAndPopularBlogs = async (
           likesCount: { $size: { $ifNull: ["$likes", []] } },
           commentsCount: {
             $sum: [
-              { $size: { $ifNull: ["$comments", []] } }, // Pastikan comments adalah array
+              { $size: { $ifNull: ["$comments", []] } },
               {
                 $sum: {
                   $map: {
-                    input: { $ifNull: ["$commentsData", []] }, // Pastikan commentsData adalah array
+                    input: { $ifNull: ["$commentsData", []] },
                     as: "comment",
-                    in: { $size: { $ifNull: ["$$comment.replies", []] } }, // Pastikan replies adalah array
+                    in: { $size: { $ifNull: ["$$comment.replies", []] } },
                   },
                 },
               },
@@ -343,13 +343,13 @@ export const getAllBlogs = async (req: any, res: Response): Promise<any> => {
           likesCount: { $size: { $ifNull: ["$likes", []] } },
           commentsCount: {
             $sum: [
-              { $size: { $ifNull: ["$comments", []] } }, // Pastikan comments adalah array
+              { $size: { $ifNull: ["$comments", []] } },
               {
                 $sum: {
                   $map: {
-                    input: { $ifNull: ["$commentsData", []] }, // Pastikan commentsData adalah array
+                    input: { $ifNull: ["$commentsData", []] },
                     as: "comment",
-                    in: { $size: { $ifNull: ["$$comment.replies", []] } }, // Pastikan replies adalah array
+                    in: { $size: { $ifNull: ["$$comment.replies", []] } },
                   },
                 },
               },

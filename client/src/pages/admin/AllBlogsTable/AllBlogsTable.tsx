@@ -19,6 +19,7 @@ import { capitalizeFirstLetter } from "../../../helper/capitalizeFirstLetter";
 import { useNavigate } from "react-router-dom";
 import { API_BASE } from "../../../constans";
 import { SkeletonCard, SkeletonRow } from "./skeleton";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 
 const AllBlogsTable: React.FC = () => {
   const navigate = useNavigate();
@@ -28,16 +29,28 @@ const AllBlogsTable: React.FC = () => {
   const [sortBy, setSortBy] = useState("createdAt");
   const [order, setOrder] = useState("desc");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 30;
   const [loading, setLoading] = useState(false);
 
   const fetchBlogs = async () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API_BASE}/api/v1/blogs`, {
-        params: { search, category: selectedCategory, sortBy, order },
+        params: {
+          search,
+          category: selectedCategory,
+          sortBy,
+          order,
+          page: currentPage,
+          limit,
+        },
       });
       if (response.data.success) {
         setBlogs(response.data.blogs);
+        setTotalPages(response.data.totalPages);
+        console.log(response.data);
       }
     } catch (error) {
       console.error("Error fetching blogs:", error);
@@ -47,12 +60,20 @@ const AllBlogsTable: React.FC = () => {
 
   useEffect(() => {
     fetchBlogs();
-  }, [search, selectedCategory, sortBy, order]);
+  }, [search, selectedCategory, sortBy, order, currentPage]);
 
   const debouncedSearch = useCallback(
     debounce((value) => setSearch(value), 500),
     []
   );
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
 
   const handleSort = (key: string) => {
     setSortBy(key);
@@ -153,22 +174,62 @@ const AllBlogsTable: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-            {loading ? Array(5).fill(null).map((_, i) => <SkeletonRow key={i} />) : blogs.map((blog, index) => (
-                <tr
-                  key={blog._id}
-                  className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}
-                >
-                  <td className="p-4 text-center">{index + 1}</td>
-                  <td className="p-4">{blog.title}</td>
-                  <td className="p-4">{blog.authorData.name}</td>
-                  <td className="p-4">
-                    {capitalizeFirstLetter(blog.category || "")}
-                  </td>
-                  <td className="p-4 text-center">{blog.commentsCount}</td>
-                  <td className="p-4 text-center">{blog.likesCount}</td>
-                  <td className="p-4 text-center">{blog.saves}</td>
-                  <td className="p-4">{formatDate(blog.createdAt)}</td>
-                  <td className="p-4 flex items-center justify-center gap-2">
+              {loading
+                ? Array(5)
+                    .fill(null)
+                    .map((_, i) => <SkeletonRow key={i} />)
+                : blogs.map((blog, index) => (
+                    <tr
+                      key={blog._id}
+                      className={
+                        index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"
+                      }
+                    >
+                      <td className="p-4 text-center">{index + 1}</td>
+                      <td className="p-4">{blog.title}</td>
+                      <td className="p-4">{blog.authorData.name}</td>
+                      <td className="p-4">
+                        {capitalizeFirstLetter(blog.category || "")}
+                      </td>
+                      <td className="p-4 text-center">{blog.commentsCount}</td>
+                      <td className="p-4 text-center">{blog.likesCount}</td>
+                      <td className="p-4 text-center">{blog.saves}</td>
+                      <td className="p-4">{formatDate(blog.createdAt)}</td>
+                      <td className="p-4 flex items-center justify-center gap-2">
+                        <button
+                          className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                          onClick={() => navigate(`/admin/edit/${blog.slug}`)}
+                        >
+                          <FaEdit />
+                        </button>
+                        <button className="text-red-500 hover:text-red-700">
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="space-y-4 lg:hidden">
+        {loading
+          ? Array(3)
+              .fill(null)
+              .map((_, i) => <SkeletonCard key={i} />)
+          : blogs.map((blog) => (
+              <div
+                key={blog._id}
+                className="relative flex items-start gap-4 bg-white p-4 border border-gray-300 shadow"
+              >
+                <div className="min-w-32">
+                  <img
+                    src={blog.thumbnail.url}
+                    alt={blog.title}
+                    className="w-32 h-32 object-cover"
+                  />
+                  <div className="p-4 flex items-center justify-center gap-2">
                     <button
                       className="text-blue-500 hover:text-blue-700 cursor-pointer"
                       onClick={() => navigate(`/admin/edit/${blog.slug}`)}
@@ -178,73 +239,63 @@ const AllBlogsTable: React.FC = () => {
                     <button className="text-red-500 hover:text-red-700">
                       <FaTrash />
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold line-clamp-2">
+                    {blog.title}
+                  </h4>
+                  <div className="text-gray-500 text-sm flex items-center gap-1 flex-wrap">
+                    <p className="flex items-center gap-1">
+                      By {blog.authorData.name}
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      {blog.commentsCount} <FaRegComment />
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      {blog.likesCount} <FaRegHeart />
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      {blog.views} <FaRegEye />
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      {blog.saves} <FaRegBookmark />
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      <FaCalendarAlt /> {formatDate(blog.createdAt)}
+                    </p>
+                  </div>
+                  <p className="text-gray-900 line-clamp-4 mt-2">
+                    {blog.highlight}
+                  </p>
+                </div>
+              </div>
+            ))}
       </div>
 
-      <div className="space-y-4 lg:hidden">
-      {loading ? Array(3).fill(null).map((_, i) => <SkeletonCard key={i} />) : blogs.map((blog) => (
-          <div
-            key={blog._id}
-            className="relative flex items-start gap-4 bg-white p-4 border border-gray-300 shadow"
-          >
-            <div className="min-w-32">
-              <img
-                src={blog.thumbnail.url}
-                alt={blog.title}
-                className="w-32 h-32 object-cover"
-              />
-              <div className="p-4 flex items-center justify-center gap-2">
-                <button
-                  className="text-blue-500 hover:text-blue-700 cursor-pointer"
-                  onClick={() => navigate(`/admin/edit/${blog.slug}`)}
-                >
-                  <FaEdit />
-                </button>
-                <button className="text-red-500 hover:text-red-700">
-                  <FaTrash />
-                </button>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold line-clamp-2">
-                {blog.title}
-              </h4>
-              <div className="text-gray-500 text-sm flex items-center gap-1 flex-wrap">
-                <p className="flex items-center gap-1">
-                  By {blog.authorData.name}
-                </p>{" "}
-                .{" "}
-                <p className="flex items-center gap-1">
-                  {blog.commentsCount} <FaRegComment />
-                </p>{" "}
-                .{" "}
-                <p className="flex items-center gap-1">
-                  {blog.likesCount} <FaRegHeart />
-                </p>{" "}
-                .{" "}
-                <p className="flex items-center gap-1">
-                  {blog.views} <FaRegEye />
-                </p>{" "}
-                .{" "}
-                <p className="flex items-center gap-1">
-                  {blog.saves} <FaRegBookmark />
-                </p>{" "}
-                .{" "}
-                <p className="flex items-center gap-1">
-                  <FaCalendarAlt /> {formatDate(blog.createdAt)}
-                </p>
-              </div>
-              <p className="text-gray-900 line-clamp-4 mt-2">
-                {blog.highlight}
-              </p>
-            </div>
-          </div>
-        ))}
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="px-4 py-1 text-2xl bg-gray-300 rounded-md disabled:opacity-50 mr-2"
+        >
+          <GrFormPrevious />
+        </button>
+        <span className="px-4 py-2">
+          {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="px-4 py-1 text-2xl bg-gray-300 rounded-md disabled:opacity-50 ml-2"
+        >
+          <GrFormNext />
+        </button>
       </div>
     </div>
   );
