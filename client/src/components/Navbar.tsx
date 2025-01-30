@@ -137,13 +137,13 @@ const Navbar: React.FC = () => {
                       Profile
                     </Link>
                     {user && user.role === "admin" && (
-                      <a
-                      href="/admin/dashboard"
+                      <Link
+                      to="/admin/dashboard"
                       className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       onClick={() => setShowDropdown(false)}
                     >
                       Admin Dashboard
-                    </a>
+                    </Link>
                     )}
                     <button
                       onClick={handleLogout}

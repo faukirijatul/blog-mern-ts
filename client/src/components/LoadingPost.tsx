@@ -17,6 +17,12 @@ const LoadingPost: React.FC = () => {
         <div className="h-4 bg-gray-300 mb-4 animate-pulse"></div>
         <div className="h-4 bg-gray-300 w-2/3 mb-4 animate-pulse"></div>
         <div className="h-4 bg-gray-300 w-1/2 mb-4 animate-pulse"></div>
+        <div className="h-4 bg-gray-300 mb-4 animate-pulse"></div>
+        <div className="h-4 bg-gray-300 w-2/3 mb-4 animate-pulse"></div>
+        <div className="h-4 bg-gray-300 w-1/2 mb-4 animate-pulse"></div>
+        <div className="h-4 bg-gray-300 mb-4 animate-pulse"></div>
+        <div className="h-4 bg-gray-300 w-2/3 mb-4 animate-pulse"></div>
+        <div className="h-4 bg-gray-300 w-1/2 mb-4 animate-pulse"></div>
         
         {/* Skeleton untuk Likes & Comments */}
         <div className="h-6 bg-gray-300 w-1/4 mb-6 animate-pulse"></div>

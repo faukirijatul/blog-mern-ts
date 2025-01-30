@@ -1,6 +1,7 @@
 import { Response } from "express";
 import Comment from "../models/comment.model";
 import Blog from "../models/blog.model";
+import User from "../models/user.model";
 import { populateBlog } from "./blog.controller";
 import Reply from "../models/reply.model";
 
@@ -8,6 +9,7 @@ export const createComment = async (req: any, res: Response): Promise<any> => {
   try {
     const { blogId } = req.params;
     const { text } = req.body;
+    const { _id } = req.user;
 
     const blog = await Blog.findById(blogId);
 
@@ -15,11 +17,24 @@ export const createComment = async (req: any, res: Response): Promise<any> => {
       return res.status(404).send({ message: "Blog not found" });
     }
 
+    if (!text) {
+      return res.status(400).send({ message: "Text is required" });
+    }
+
+    const user = await User.findById(_id);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
     const comment = new Comment({
       blog: blogId,
       user: req.user._id,
       text,
     });
+
+    user.statistic.totalComments += 1;
+    await user.save();
 
     blog.comments && blog.comments.push(comment._id);
     await blog.save();
@@ -130,6 +145,12 @@ export const deleteComment = async (req: any, res: Response): Promise<any> => {
       return res.status(404).send({ message: "Blog not found" });
     }
 
+    const user = await User.findById(_id);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
     const comment = await Comment.findById(commentId);
 
     if (!comment) {
@@ -141,6 +162,9 @@ export const deleteComment = async (req: any, res: Response): Promise<any> => {
         .status(401)
         .send({ message: "You are not authorized to delete this comment" });
     }
+
+    user.statistic.totalComments -= 1;
+    await user.save();
 
     await Reply.deleteMany({ comment: commentId });
 

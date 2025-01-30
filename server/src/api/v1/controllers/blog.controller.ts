@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { uploadImage, deleteImage } from "../../../config/cloudinary";
 import Blog from "../models/blog.model";
+import User from "../models/user.model";
 import "../models/comment.model";
 import "../models/reply.model";
 import "../models/user.model";
@@ -114,10 +115,12 @@ export const createBlog = async (req: any, res: Response): Promise<any> => {
     });
   } catch (error) {
     console.error("Error in create blog controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to create blog",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to create blog",
+      });
+    }
   }
 };
 
@@ -156,10 +159,12 @@ export const getRandomBlogs = async (req: any, res: Response): Promise<any> => {
     });
   } catch (error) {
     console.error("Error in getRandomBlogs controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch random blogs",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch random blogs",
+      });
+    }
   }
 };
 
@@ -284,10 +289,12 @@ export const getLatestAndPopularBlogs = async (
     });
   } catch (error) {
     console.error("Error in getMultipleBlogSets controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch blogs",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch blogs",
+      });
+    }
   }
 };
 
@@ -389,10 +396,12 @@ export const getAllBlogs = async (req: any, res: Response): Promise<any> => {
     });
   } catch (error) {
     console.error("Error in getAllBlogs controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch all blogs",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch all blogs",
+      });
+    }
   }
 };
 
@@ -464,17 +473,21 @@ export const updateBlogBySlug = async (
       });
     } catch (err) {
       console.error("Error during blog update:", err);
+      if (!res.headersSent) {
+        return res.status(500).json({
+          success: false,
+          message: "Failed to update blog",
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error in update blog by slug controller: ", error);
+    if (!res.headersSent) {
       return res.status(500).json({
         success: false,
         message: "Failed to update blog",
       });
     }
-  } catch (error) {
-    console.error("Error in update blog by slug controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to update blog",
-    });
   }
 };
 
@@ -502,10 +515,12 @@ export const getBlogBySlug = async (req: any, res: Response): Promise<any> => {
     });
   } catch (error) {
     console.log("Error in get blog by slug controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to get blog",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to get blog",
+      });
+    }
   }
 };
 
@@ -524,12 +539,24 @@ export const likeBlogBySlug = async (req: any, res: Response): Promise<any> => {
       });
     }
 
+    const user = await User.findById(_id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
     if (blog.likes.includes(_id)) {
       return res.status(400).json({
         success: false,
         message: "Blog already liked",
       });
     }
+
+    user.statistic.totalLikes += 1;
+    await user.save();
 
     blog.likes.push(_id);
     await blog.save();
@@ -543,10 +570,12 @@ export const likeBlogBySlug = async (req: any, res: Response): Promise<any> => {
     });
   } catch (error) {
     console.log("Error in like blog by slug controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to like blog",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to like blog",
+      });
+    }
   }
 };
 
@@ -575,6 +604,18 @@ export const unlikeBlogBySlug = async (
       });
     }
 
+    const user = await User.findById(_id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.statistic.totalLikes -= 1;
+    await user.save();
+
     blog.likes = blog.likes.filter((id) => id.toString() !== _id.toString());
     await blog.save();
 
@@ -588,10 +629,12 @@ export const unlikeBlogBySlug = async (
   } catch (error) {
     console.log("Error in unlike blog by slug controller: ", error);
     if (!res.headersSent) {
-      return res.status(500).json({
-        success: false,
-        message: "Failed to unlike blog",
-      });
+      if (!res.headersSent) {
+        return res.status(500).json({
+          success: false,
+          message: "Failed to unlike blog",
+        });
+      }
     }
   }
 };

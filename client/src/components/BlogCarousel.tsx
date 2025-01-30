@@ -60,6 +60,7 @@ const BlogCarousel: React.FC = () => {
                 <h3
                   className="text-lg font-medium hover:underline mb-1 cursor-pointer line-clamp-1"
                   onClick={() => navigate(`/blog/${blog.slug}`)}
+                  title={blog.title}
                 >
                   {blog.title}
                 </h3>

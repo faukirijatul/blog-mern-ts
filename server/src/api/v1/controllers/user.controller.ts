@@ -96,18 +96,84 @@ export const logout = async (req: any, res: Response): Promise<any> => {
 
 export const getAllUsers = async (req: any, res: Response): Promise<any> => {
   try {
-    const users = await User.find();
+    // Ambil query params
+    const {
+      search,
+      sortBy = "createdAt",
+      order = "desc",
+      page = "1",
+      limit = "10",
+    } = req.query;
+
+    // Konversi `page` dan `limit` ke angka
+    const pageNumber = parseInt(page as string, 10) || 1;
+    const limitNumber = parseInt(limit as string, 10) || 10;
+    const skip = (pageNumber - 1) * limitNumber;
+
+    // Buat filter pencarian
+    const searchQuery = search
+      ? {
+          $or: [
+            { name: { $regex: search, $options: "i" } }, // Case insensitive
+            { email: { $regex: search, $options: "i" } },
+          ],
+        }
+      : {};
+
+    // Tentukan sorting
+    const sortOptions: Record<string, any> = {};
+    const validSortFields = [
+      "name",
+      "email",
+      "createdAt",
+      "statistic.totalComments",
+      "statistic.totalLikes",
+      "savedBlogs",
+    ];
+    if (validSortFields.includes(sortBy as string)) {
+      sortOptions[sortBy as string] = order === "asc" ? 1 : -1;
+    } else {
+      sortOptions["createdAt"] = -1; // Default sorting
+    }
+
+    // Fetch data users dengan pencarian, pagination, dan sorting
+    const users = await User.find(searchQuery)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limitNumber)
+      .select(
+        "name email statistic.totalComments statistic.totalLikes savedBlogs createdAt"
+      )
+      .lean();
+
+    // Format response
+    const formattedUsers = users.map((user) => ({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      totalComments: user.statistic ? user.statistic?.totalComments : 0,
+      totalLikes: user.statistic ? user.statistic?.totalLikes : 0,
+      savedBlogsCount: user.savedBlogs ? user.savedBlogs.length : 0,
+      createdAt: user.createdAt,
+    }));
+
+    // Hitung total data untuk pagination
+    const totalUsers = await User.countDocuments(searchQuery);
+    const totalPages = Math.ceil(totalUsers / limitNumber);
 
     return res.status(200).json({
       success: true,
-      data: users,
+      users: formattedUsers,
+      totalUsers,
+      totalPages,
+      currentPage: pageNumber,
+      limit: limitNumber,
     });
   } catch (error) {
-    console.log("Error in get all users controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to get users",
-    });
+    console.error("Error fetching users:", error);
+    if (!res.headersSent) {
+      return res.status(500).json({ success: false, message: "Failed fetching users" });
+    }
   }
 };
 
@@ -115,8 +181,6 @@ export const getAllUsers = async (req: any, res: Response): Promise<any> => {
 export const updateUser = async (req: any, res: Response): Promise<any> => {
   try {
     const { name, picture } = req.body;
-
-    console.log(req.body);
 
     const { _id } = req.user;
 

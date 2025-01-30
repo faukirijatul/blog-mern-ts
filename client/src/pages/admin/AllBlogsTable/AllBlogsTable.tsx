@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE } from "../../../constans";
 import { SkeletonCard, SkeletonRow } from "./skeleton";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import toast from "react-hot-toast";
 
 const AllBlogsTable: React.FC = () => {
   const navigate = useNavigate();
@@ -50,10 +51,10 @@ const AllBlogsTable: React.FC = () => {
       if (response.data.success) {
         setBlogs(response.data.blogs);
         setTotalPages(response.data.totalPages);
-        console.log(response.data);
       }
     } catch (error) {
       console.error("Error fetching blogs:", error);
+      toast.error("Error fetching blogs");
     }
     setLoading(false);
   };

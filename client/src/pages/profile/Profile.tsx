@@ -33,8 +33,6 @@ const Profile: React.FC = () => {
   );
   const dispatch: AppDispatch = useDispatch();
 
-  console.log(savedBlogs);
-
   useEffect(() => {
     if (user) {
       setName(user.name);
@@ -70,7 +68,7 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div className="mt-27 px-4 md:px-8 xl:px-30">
+    <div className="mt-27 mb-10 px-4 md:px-8 xl:px-30">
       <div className="flex flex-col gap-6">
         {/* Profile Section */}
         <div className="flex-1 bg-white">
@@ -98,7 +96,7 @@ const Profile: React.FC = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="border p-2 w-full rounded mt-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="border border-gray-300 p-2 w-full rounded mt-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
 
             <label className="text-sm text-gray-600 mt-3 block">Email</label>

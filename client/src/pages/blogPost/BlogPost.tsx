@@ -10,7 +10,6 @@ import {
 } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import LoadingPost from "../../components/LoadingPost";
-import Footer from "../../components/Footer";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import {
@@ -206,7 +205,7 @@ const BlogPost: React.FC = () => {
                       {formatDate(comment.createdAt)}
                     </span>
                   </div>
-                  <p className="text-gray-700 mt-1">{comment.text}</p>
+                  <p className="text-gray-700 mt-1 whitespace-pre-wrap">{comment.text}</p>
                   <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
                     <button className="flex items-center gap-1">
                       {user &&
@@ -300,7 +299,7 @@ const BlogPost: React.FC = () => {
                             {formatDate(reply.createdAt)}
                           </span>
                         </div>
-                        <p className="text-gray-700 mt-1">{reply.text}</p>
+                        <p className="text-gray-700 mt-1 whitespace-pre-wrap">{reply.text}</p>
                         <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
                           <button className="flex items-center gap-1">
                             {user &&
@@ -345,8 +344,6 @@ const BlogPost: React.FC = () => {
           </div>
         </div>
       )}
-
-      <Footer />
     </>
   );
 };

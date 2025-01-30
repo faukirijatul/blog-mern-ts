@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Advertisement from "../../components/Advertisement";
-import Footer from "../../components/Footer";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   FaArrowDown,
@@ -45,7 +44,7 @@ const BlogList: React.FC = () => {
 
   const [blogs, setBlogs] = useState<IAllBlog[]>([]);
   const [page, setPage] = useState(1);
-  const [limit] = useState(2);
+  const [limit] = useState(10);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -254,10 +253,6 @@ const BlogList: React.FC = () => {
           {/* Advertisement Section */}
           <Advertisement />
         </div>
-      </div>
-
-      <div className={`${pathname.startsWith("/category") ? "" : "hidden"}`}>
-        <Footer />
       </div>
     </>
   );

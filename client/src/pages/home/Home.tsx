@@ -2,7 +2,6 @@ import React from "react";
 import BlogCarousel from "../../components/BlogCarousel";
 import LatestAndMostPopular from "./LatestAndMostPopular";
 import BlogList from "../blogList/BlogList";
-import Footer from "../../components/Footer";
 
 const Home: React.FC = () => {
   return (
@@ -12,8 +11,6 @@ const Home: React.FC = () => {
         <LatestAndMostPopular />
         <BlogList />
       </div>
-
-      <Footer />
     </>
   );
 };

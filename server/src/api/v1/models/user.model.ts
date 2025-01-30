@@ -9,8 +9,12 @@ export interface IUser {
         url: string;
     };
     savedBlogs?: mongoose.Types.ObjectId[];
-    likedBlogs?: mongoose.Types.ObjectId[];
     role: string;
+    statistic: {
+        totalComments: number;
+        totalLikes: number;
+    }
+    createdAt?: Date;
 }
 
 const userSchema : mongoose.Schema<IUser> = new mongoose.Schema({
@@ -22,6 +26,10 @@ const userSchema : mongoose.Schema<IUser> = new mongoose.Schema({
     },
     savedBlogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }],
     role: { type: String, default: "user", enum: ["user", "admin"] },
+    statistic: {
+        totalComments: { type: Number, default: 0 },
+        totalLikes: { type: Number, default: 0 }
+    }
 }, { timestamps: true });
 
 export default mongoose.model("User", userSchema);
