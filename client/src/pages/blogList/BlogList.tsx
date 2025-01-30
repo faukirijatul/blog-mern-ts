@@ -6,11 +6,14 @@ import {
   FaArrowDown,
   FaArrowUp,
   FaBookmark,
+  FaCalendarAlt,
+  FaEdit,
   FaRegBookmark,
   FaRegComment,
   FaRegEye,
   FaRegHeart,
   FaSpinner,
+  FaTrash,
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
@@ -21,8 +24,8 @@ import axios from "axios";
 import debounce from "lodash.debounce";
 import Select from "react-select";
 import { categories } from "../../data/data";
-
-const API_BASE = import.meta.env.VITE_SERVER_URL;
+import { formatDate } from "../../helper/formatDate";
+import { API_BASE } from "../../constans";
 
 const sortOptions = [
   { value: "createdAt", label: "Post Time" },
@@ -106,7 +109,7 @@ const BlogList: React.FC = () => {
     <>
       <div
         className={`max-w-screen-xl mx-auto py-8 ${
-          pathname.startsWith("/category") ? "mt-20 px-2 xl:px-0" : ""
+          pathname.startsWith("/category") ? "mt-20 px-2 md:px-8" : ""
         }`}
       >
         {/* Search & Filters */}
@@ -168,19 +171,50 @@ const BlogList: React.FC = () => {
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
-                  <img
-                    src={blog.thumbnail.url}
-                    alt={blog.title}
-                    className="w-32 h-32 object-cover"
-                  />
+                  <div className="min-w-32">
+                    <img
+                      src={blog.thumbnail.url}
+                      alt={blog.title}
+                      className="w-32 h-32 object-cover"
+                    />
+                    {user && user.role === "admin" && (
+                      <div className="p-4 flex items-center justify-center gap-2">
+                        <button
+                          className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                          onClick={() => window.location.href=(`/admin/edit/${blog.slug}`)}
+                        >
+                          <FaEdit />
+                        </button>
+                        <button className="text-red-500 hover:text-red-700">
+                          <FaTrash />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                   <div>
                     <h4 className="text-lg font-semibold line-clamp-2">
                       {blog.title}
                     </h4>
-                    <div className="text-gray-500 text-sm flex items-center gap-1">
-                      By {blog.authorData.name} . {blog.commentsCount}{" "}
-                      <FaRegComment /> . {blog.likesCount} <FaRegHeart /> .{" "}
-                      {blog.views} <FaRegEye />
+                    <div className="text-gray-500 text-sm flex items-center gap-1 flex-wrap">
+                      <p className="flex items-center gap-1">
+                        By {blog.authorData.name}
+                      </p>{" "}
+                      .{" "}
+                      <p className="flex items-center gap-1">
+                        {blog.commentsCount} <FaRegComment />
+                      </p>{" "}
+                      .{" "}
+                      <p className="flex items-center gap-1">
+                        {blog.likesCount} <FaRegHeart />
+                      </p>{" "}
+                      .{" "}
+                      <p className="flex items-center gap-1">
+                        {blog.views} <FaRegEye />
+                      </p>{" "}
+                      .{" "}
+                      <p className="flex items-center gap-1">
+                        <FaCalendarAlt /> {formatDate(blog.createdAt)}
+                      </p>
                     </div>
                     <p className="text-gray-900 line-clamp-3 mt-2">
                       {blog.highlight}

@@ -13,6 +13,8 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./store/store";
 import { currentUser } from "./store/slices/userSlice";
+import { addVisit } from "./store/slices/statisticSlice";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   const pathname = window.location.pathname;
@@ -23,6 +25,7 @@ function App() {
 
   useEffect(() => {
     dispatch(currentUser());
+    dispatch(addVisit());
   }, [dispatch]);
 
   console.log(user);
@@ -32,6 +35,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Navigate to="/" />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/category/:category" element={<BlogList />} />
         <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
@@ -41,6 +45,7 @@ function App() {
           <Route path="create" element={<BlogContentForm />} />
           <Route path="edit/:slug" element={<BlogContentForm />} />
           <Route path="users" element={<AllUsersTable />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>

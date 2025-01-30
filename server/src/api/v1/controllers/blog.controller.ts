@@ -131,11 +131,11 @@ export const getRandomBlogs = async (req: any, res: Response): Promise<any> => {
           from: "users",
           localField: "author",
           foreignField: "_id",
-          as: "authorData"
-        }
+          as: "authorData",
+        },
       },
       {
-        $unwind: "$authorData"
+        $unwind: "$authorData",
       },
       {
         $project: {
@@ -144,26 +144,29 @@ export const getRandomBlogs = async (req: any, res: Response): Promise<any> => {
           category: 1,
           createdAt: 1,
           "authorData.name": 1,
-          "thumbnail.url": 1
-        }
-      }
+          "thumbnail.url": 1,
+        },
+      },
     ]);
 
     return res.status(200).json({
       success: true,
       message: "Random blogs fetched successfully",
-      blogs
+      blogs,
     });
   } catch (error) {
     console.error("Error in getRandomBlogs controller: ", error);
     return res.status(500).json({
       success: false,
-      message: "Failed to fetch random blogs"
+      message: "Failed to fetch random blogs",
     });
   }
 };
 
-export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise<any> => {
+export const getLatestAndPopularBlogs = async (
+  req: any,
+  res: Response
+): Promise<any> => {
   try {
     const latestBlogs = await Blog.aggregate([
       {
@@ -171,8 +174,8 @@ export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise
           from: "users",
           localField: "author",
           foreignField: "_id",
-          as: "authorData"
-        }
+          as: "authorData",
+        },
       },
       { $unwind: "$authorData" },
       {
@@ -180,8 +183,8 @@ export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise
           from: "comments",
           localField: "comments",
           foreignField: "_id",
-          as: "commentsData"
-        }
+          as: "commentsData",
+        },
       },
       {
         $addFields: {
@@ -194,13 +197,13 @@ export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise
                   $map: {
                     input: "$commentsData",
                     as: "comment",
-                    in: { $size: "$$comment.replies" }
-                  }
-                }
-              }
-            ]
-          }
-        }
+                    in: { $size: "$$comment.replies" },
+                  },
+                },
+              },
+            ],
+          },
+        },
       },
       { $sort: { createdAt: -1 } },
       { $limit: 5 },
@@ -214,9 +217,9 @@ export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise
           likesCount: 1,
           views: 1,
           commentsCount: 1,
-          createdAt: 1
-        }
-      }
+          createdAt: 1,
+        },
+      },
     ]);
 
     const popularBlogs = await Blog.aggregate([
@@ -225,8 +228,8 @@ export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise
           from: "users",
           localField: "author",
           foreignField: "_id",
-          as: "authorData"
-        }
+          as: "authorData",
+        },
       },
       { $unwind: "$authorData" },
       {
@@ -234,8 +237,8 @@ export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise
           from: "comments",
           localField: "comments",
           foreignField: "_id",
-          as: "commentsData"
-        }
+          as: "commentsData",
+        },
       },
       {
         $addFields: {
@@ -248,13 +251,13 @@ export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise
                   $map: {
                     input: { $ifNull: ["$commentsData", []] }, // Pastikan commentsData adalah array
                     as: "comment",
-                    in: { $size: { $ifNull: ["$$comment.replies", []] } } // Pastikan replies adalah array
-                  }
-                }
-              }
-            ]
-          }
-        }
+                    in: { $size: { $ifNull: ["$$comment.replies", []] } }, // Pastikan replies adalah array
+                  },
+                },
+              },
+            ],
+          },
+        },
       },
       { $sort: { views: -1 } },
       { $limit: 5 },
@@ -268,22 +271,22 @@ export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise
           likesCount: 1,
           views: 1,
           commentsCount: 1,
-          createdAt: 1
-        }
-      }
+          createdAt: 1,
+        },
+      },
     ]);
 
     return res.status(200).json({
       success: true,
       message: "Latest and Popular blogs fetched successfully",
       latestBlogs,
-      popularBlogs
+      popularBlogs,
     });
   } catch (error) {
     console.error("Error in getMultipleBlogSets controller: ", error);
     return res.status(500).json({
       success: false,
-      message: "Failed to fetch blogs"
+      message: "Failed to fetch blogs",
     });
   }
 };
@@ -291,7 +294,14 @@ export const getLatestAndPopularBlogs = async (req: any, res: Response): Promise
 // get all blogs
 export const getAllBlogs = async (req: any, res: Response): Promise<any> => {
   try {
-    const { page = 1, limit = 10, search = "", category, sortBy = "createdAt", order = "desc" } = req.query;
+    const {
+      page = 1,
+      limit = 10,
+      search = "",
+      category,
+      sortBy = "createdAt",
+      order = "desc",
+    } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const sortOptions: any = {};
     sortOptions[sortBy] = order === "desc" ? -1 : 1;
@@ -301,7 +311,7 @@ export const getAllBlogs = async (req: any, res: Response): Promise<any> => {
       match.$or = [
         { title: { $regex: search, $options: "i" } },
         { highlight: { $regex: search, $options: "i" } },
-        { "authorData.name": { $regex: search, $options: "i" } }
+        { "authorData.name": { $regex: search, $options: "i" } },
       ];
     }
     if (category) {
@@ -314,19 +324,19 @@ export const getAllBlogs = async (req: any, res: Response): Promise<any> => {
           from: "users",
           localField: "author",
           foreignField: "_id",
-          as: "authorData"
-        }
+          as: "authorData",
+        },
       },
       {
-        $unwind: "$authorData"
+        $unwind: "$authorData",
       },
       {
         $lookup: {
           from: "comments",
           localField: "comments",
           foreignField: "_id",
-          as: "commentsData"
-        }
+          as: "commentsData",
+        },
       },
       {
         $addFields: {
@@ -339,13 +349,13 @@ export const getAllBlogs = async (req: any, res: Response): Promise<any> => {
                   $map: {
                     input: { $ifNull: ["$commentsData", []] }, // Pastikan commentsData adalah array
                     as: "comment",
-                    in: { $size: { $ifNull: ["$$comment.replies", []] } } // Pastikan replies adalah array
-                  }
-                }
-              }
-            ]
-          }
-        }
+                    in: { $size: { $ifNull: ["$$comment.replies", []] } }, // Pastikan replies adalah array
+                  },
+                },
+              },
+            ],
+          },
+        },
       },
       { $match: match },
       { $sort: sortOptions },
@@ -355,31 +365,33 @@ export const getAllBlogs = async (req: any, res: Response): Promise<any> => {
         $project: {
           title: 1,
           slug: 1,
+          category: 1,
           highlight: 1,
           "authorData.name": 1,
           "thumbnail.url": 1,
           likesCount: 1,
+          saves: 1,
           views: 1,
           commentsCount: 1,
-          createdAt: 1
-        }
-      }
+          createdAt: 1,
+        },
+      },
     ]);
 
     const totalBlogs = await Blog.countDocuments(match);
-    
+
     return res.status(200).json({
       success: true,
       message: "All blogs fetched successfully",
       blogs,
       totalPages: Math.ceil(totalBlogs / parseInt(limit)),
-      currentPage: parseInt(page)
+      currentPage: parseInt(page),
     });
   } catch (error) {
     console.error("Error in getAllBlogs controller: ", error);
     return res.status(500).json({
       success: false,
-      message: "Failed to fetch all blogs"
+      message: "Failed to fetch all blogs",
     });
   }
 };
@@ -575,10 +587,12 @@ export const unlikeBlogBySlug = async (
     });
   } catch (error) {
     console.log("Error in unlike blog by slug controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to unlike blog",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to unlike blog",
+      });
+    }
   }
 };
 

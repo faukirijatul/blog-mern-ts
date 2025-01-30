@@ -40,7 +40,7 @@ const Sidebar: React.FC<Props> = ({isExpanded, setIsExpanded, isMobile}) => {
     <div
       className={`h-screen bg-gray-800 text-white ${
         isExpanded ? "w-64" : "w-13"
-      } transition-width duration-300 flex flex-col ${isMobile ? "fixed z-10" : "sticky"} top-0 left-0`}
+      } transition-width duration-300 flex flex-col ${isMobile ? "fixed z-60" : "sticky"} top-0 left-0`}
     >
       <button
         className="text-xl p-4 hover:bg-gray-700 focus:outline-none"

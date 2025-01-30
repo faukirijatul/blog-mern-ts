@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../../store/store";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import {
-  getFiveLatestAndPopularBlogs,
-} from "../../store/slices/blogSlice";
+import { getFiveLatestAndPopularBlogs } from "../../store/slices/blogSlice";
 import {
   FaCalendarAlt,
   FaRegComment,
@@ -15,7 +13,6 @@ import {
 import { formatDate } from "../../helper/formatDate";
 
 const LatestAndMostPopular: React.FC = () => {
-
   const navigate = useNavigate();
 
   const dispatch: AppDispatch = useDispatch();
@@ -56,10 +53,22 @@ const LatestAndMostPopular: React.FC = () => {
                   >
                     {blog.title}
                   </h4>
-                  <div className="text-gray-500 text-sm flex items-center gap-1">
-                    By {blog.authorData.name} . {blog.commentsCount}{" "}
-                    <FaRegComment /> . {blog.likesCount} <FaRegHeart /> .{" "}
-                    {blog.views} <FaRegEye />
+                  <div className="text-gray-500 text-sm flex items-center gap-1 flex-wrap">
+                    <p className="flex items-center gap-1">
+                      By {blog.authorData.name}
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      {blog.commentsCount} <FaRegComment />
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      {blog.likesCount} <FaRegHeart />
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      {blog.views} <FaRegEye />
+                    </p>
                   </div>
                   <p className="text-gray-500 text-sm flex items-center gap-1 mt-2">
                     <FaCalendarAlt /> {formatDate(blog.createdAt)}
@@ -95,10 +104,22 @@ const LatestAndMostPopular: React.FC = () => {
                   >
                     {blog.title}
                   </h4>
-                  <div className="text-gray-500 text-sm flex items-center gap-1">
-                    By {blog.authorData.name} . {blog.commentsCount}{" "}
-                    <FaRegComment /> . {blog.likesCount} <FaRegHeart /> .{" "}
-                    {blog.views} <FaRegEye />
+                  <div className="text-gray-500 text-sm flex items-center gap-1 flex-wrap">
+                    <p className="flex items-center gap-1">
+                      By {blog.authorData.name}
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      {blog.commentsCount} <FaRegComment />
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      {blog.likesCount} <FaRegHeart />
+                    </p>{" "}
+                    .{" "}
+                    <p className="flex items-center gap-1">
+                      {blog.views} <FaRegEye />
+                    </p>
                   </div>
                   <p className="text-gray-500 text-sm flex items-center gap-1 mt-2">
                     <FaCalendarAlt /> {formatDate(blog.createdAt)}

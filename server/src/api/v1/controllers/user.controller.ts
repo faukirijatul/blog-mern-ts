@@ -3,6 +3,7 @@ import { setTokenCookie } from "../../../utils/setTokenCookie";
 import User from "../models/user.model";
 import Blog from "../models/blog.model";
 import { Response } from "express";
+import { deleteImage, uploadImage } from "../../../config/cloudinary";
 
 interface ILoginData {
   name: string;
@@ -55,9 +56,9 @@ export const getCurrentUser = async (req: any, res: any): Promise<any> => {
     const user = await User.findById(req.user._id);
 
     if (!user) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "User not found" 
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
       });
     }
 
@@ -93,7 +94,7 @@ export const logout = async (req: any, res: Response): Promise<any> => {
   }
 };
 
-export const getAllUsers = async (req: any, res: Response): Promise<any>  => {
+export const getAllUsers = async (req: any, res: Response): Promise<any> => {
   try {
     const users = await User.find();
 
@@ -107,6 +108,66 @@ export const getAllUsers = async (req: any, res: Response): Promise<any>  => {
       success: false,
       message: "Failed to get users",
     });
+  }
+};
+
+// update user (name and picture) with coludinary
+export const updateUser = async (req: any, res: Response): Promise<any> => {
+  try {
+    const { name, picture } = req.body;
+
+    console.log(req.body);
+
+    const { _id } = req.user;
+
+    if (!name && !picture) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide name or picture",
+      });
+    }
+
+    const user = await User.findById(_id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (name) {
+      user.name = name;
+    }
+
+    if (picture) {
+      if (user.picture && user.picture.public_id) {
+        await deleteImage(user.picture.public_id);
+      }
+
+      const result = await uploadImage(picture, "almuhsiny/blog/pictures");
+
+      user.picture = {
+        url: result ? result.secure_url : "",
+        public_id: result ? result.public_id : "",
+      };
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      user,
+    });
+  } catch (error) {
+    console.log("Error in update user controller: ", error);
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to update user",
+      });
+    }
   }
 };
 
@@ -142,7 +203,7 @@ export const saveBlog = async (req: any, res: Response): Promise<any> => {
     }
 
     blog.saves += 1;
-    await blog.save(); 
+    await blog.save();
 
     user.savedBlogs && user.savedBlogs.push(blogId);
     await user.save();
@@ -151,13 +212,16 @@ export const saveBlog = async (req: any, res: Response): Promise<any> => {
       success: true,
       message: "Blog saved successfully",
       user,
+      blog,
     });
   } catch (error) {
     console.log("Error in save blog controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to save blog",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to save blog",
+      });
+    }
   }
 };
 
@@ -193,21 +257,60 @@ export const unsaveBlog = async (req: any, res: Response): Promise<any> => {
     }
 
     blog.saves -= 1;
-    await blog.save(); 
+    await blog.save();
 
-    user.savedBlogs = user.savedBlogs.filter((id) => id.toString() !== blogId.toString());
+    user.savedBlogs = user.savedBlogs.filter(
+      (id) => id.toString() !== blogId.toString()
+    );
     await user.save();
 
     return res.status(200).json({
       success: true,
       message: "Blog unsaved successfully",
       user,
+      blog,
     });
   } catch (error) {
     console.log("Error in unsave blog controller: ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to unsave blog",
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to unsave blog",
+      });
+    }
+  }
+};
+
+// get user saved blogs
+export const getUserSavedBlogs = async (
+  req: any,
+  res: Response
+): Promise<any> => {
+  try {
+    const { blogIds } = req.body;
+
+    if (!Array.isArray(blogIds) || blogIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid blog IDs",
+      });
+    }
+
+    const blogs = await Blog.find({ _id: { $in: blogIds } }).select(
+      "title thumbnail.url highlight slug"
+    );
+
+    return res.json({
+      success: true,
+      blogs,
     });
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
   }
 };

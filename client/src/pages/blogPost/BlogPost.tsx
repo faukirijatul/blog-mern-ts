@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   FaBookmark,
+  FaEdit,
   FaHeart,
   FaRegBookmark,
   FaRegHeart,
@@ -31,6 +32,7 @@ import { formatDate } from "../../helper/formatDate";
 import { calculateTotalCommentsAndReplies } from "../../helper/calculateTotalCommentsAndReplies";
 
 const BlogPost: React.FC = () => {
+
   const { slug } = useParams<{ slug: string }>();
 
   const dispatch: AppDispatch = useDispatch();
@@ -117,6 +119,19 @@ const BlogPost: React.FC = () => {
             <p className="text-gray-500 mb-4">
               By {blog.author?.name} | {formatDate(blog.createdAt)}
             </p>
+            {user && user.role === "admin" && (
+              <div className="p-4 flex items-center justify-end gap-2">
+                <button
+                  className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                  onClick={() => window.location.href=(`/admin/edit/${blog.slug}`)}
+                >
+                  <FaEdit />
+                </button>
+                <button className="text-red-500 hover:text-red-700">
+                  <FaTrash />
+                </button>
+              </div>
+            )}
             <div
               className="prose prose-sm md:prose-base lg:prose-lg mb-6 text-justify space-y-4"
               dangerouslySetInnerHTML={{ __html: blog.content }}

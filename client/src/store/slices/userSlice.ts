@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
-
-const API_BASE = import.meta.env.VITE_SERVER_URL;
+import { API_BASE } from "../../constans";
 
 export interface IUser {
   _id: string;
@@ -22,6 +21,7 @@ export interface UserState {
   isAuthenticated: boolean;
   loginLoading: boolean;
   logoutLoading: boolean;
+  updateUserLoading: boolean;
   currentUserLoading: boolean;
   saveBlogLoading: boolean;
   unsaveBlogLoading: boolean;
@@ -32,6 +32,7 @@ const initialState: UserState = {
   isAuthenticated: true,
   loginLoading: false,
   logoutLoading: false,
+  updateUserLoading: false,
   currentUserLoading: false,
   saveBlogLoading: false,
   unsaveBlogLoading: false,
@@ -43,7 +44,7 @@ interface userData {
   picture: string;
 }
 
-export const login = createAsyncThunk("user/login", async (data : userData) => {
+export const login = createAsyncThunk("user/login", async (data: userData) => {
   try {
     const response = await axios.post(`${API_BASE}/api/v1/users/login`, data, {
       withCredentials: true,
@@ -56,14 +57,14 @@ export const login = createAsyncThunk("user/login", async (data : userData) => {
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "An unknown error occurred");
-        throw new Error(
-          error.response?.data?.message || "An unknown error occurred"
-        );
-      } else {
-        toast.error("An unknown error occurred");
-        throw new Error("An unknown error occurred");
-      }
+      toast.error(error.response?.data?.message || "An unknown error occurred");
+      throw new Error(
+        error.response?.data?.message || "An unknown error occurred"
+      );
+    } else {
+      toast.error("An unknown error occurred");
+      throw new Error("An unknown error occurred");
+    }
   }
 });
 
@@ -91,6 +92,40 @@ export const logout = createAsyncThunk("user/logout", async () => {
   }
 });
 
+// update user data
+export interface updateUserData {
+  name: string;
+  picture: string;
+}
+
+export const updateUser = createAsyncThunk(
+  "user/updateUser",
+  async (data: updateUserData) => {
+    try {
+      const response = await axios.put(
+        `${API_BASE}/api/v1/users`,
+        data,
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.data.success) {
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error();
+      }
+    }
+  }
+);
+
 export const currentUser = createAsyncThunk("user/currentUser", async () => {
   try {
     const response = await axios.get(`${API_BASE}/api/v1/users/user`, {
@@ -110,51 +145,67 @@ export const currentUser = createAsyncThunk("user/currentUser", async () => {
   }
 });
 
-export const saveBlog = createAsyncThunk("user/saveBlog", async (blogId: string) => {
-  try {
-    const response = await axios.get(`${API_BASE}/api/v1/users/save/${blogId}`, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const saveBlog = createAsyncThunk(
+  "user/saveBlog",
+  async (blogId: string) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE}/api/v1/users/save/${blogId}`,
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
-export const unsaveBlog = createAsyncThunk("user/unsaveBlog", async (blogId: string) => {
-  try {
-    const response = await axios.get(`${API_BASE}/api/v1/users/unsave/${blogId}`, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const unsaveBlog = createAsyncThunk(
+  "user/unsaveBlog",
+  async (blogId: string) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE}/api/v1/users/unsave/${blogId}`,
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
 const userSlice = createSlice({
   name: "user",
@@ -183,6 +234,16 @@ const userSlice = createSlice({
       })
       .addCase(logout.rejected, (state) => {
         state.logoutLoading = false;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.updateUserLoading = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.updateUserLoading = false;
+      })
+      .addCase(updateUser.rejected, (state) => {
+        state.updateUserLoading = false;
       })
       .addCase(currentUser.pending, (state) => {
         state.currentUserLoading = true;
@@ -214,7 +275,7 @@ const userSlice = createSlice({
       })
       .addCase(unsaveBlog.rejected, (state) => {
         state.unsaveBlogLoading = false;
-      })
+      });
   },
 });
 

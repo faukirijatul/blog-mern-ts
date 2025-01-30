@@ -2,8 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { IUser } from "./userSlice";
-
-const API_BASE = import.meta.env.VITE_SERVER_URL;
+import { API_BASE } from "../../constans";
 
 export interface IReply {
   _id: string;
@@ -42,10 +41,10 @@ export interface IBlog {
 }
 
 export interface IRandomBlog {
-  _id : string;
+  _id: string;
   title: string;
-  thumbnail : {
-    url : string;
+  thumbnail: {
+    url: string;
   };
   category: string;
   createdAt: string;
@@ -63,7 +62,9 @@ export interface IAllBlog {
     url: string;
   };
   views: number;
+  category?: string;
   createdAt: string;
+  saves?: number;
   slug: string;
   authorData: {
     name: string;
@@ -124,29 +125,34 @@ interface BlogData {
   content: string;
 }
 
-export const createBlog = createAsyncThunk("blog/create", async (data : BlogData) => {
-  try {
-    const response = await axios.post(`${API_BASE}/api/v1/blogs`, data, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      toast.success(response.data.message);
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
-      );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+export const createBlog = createAsyncThunk(
+  "blog/create",
+  async (data: BlogData) => {
+    try {
+      const response = await axios.post(`${API_BASE}/api/v1/blogs`, data, {
+        withCredentials: true,
+      });
+      if (response.data.success) {
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
 // get five random
 export const getRandomBlogs = createAsyncThunk("blog/random", async () => {
@@ -181,73 +187,94 @@ export interface IBlogQuery {
 }
 
 // get five latest and popular
-export const getFiveLatestAndPopularBlogs = createAsyncThunk("blog/latest", async () => {
-  try {
-    const response = await axios.get(`${API_BASE}/api/v1/blogs/latest-and-popular`);
-    if (response.data.success) {
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const getFiveLatestAndPopularBlogs = createAsyncThunk(
+  "blog/latest",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE}/api/v1/blogs/latest-and-popular`
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
-export const updateBlog = createAsyncThunk("blog/update", async ({ data, slug }: { data: BlogData, slug: string }) => {
-  try {
-    const response = await axios.put(`${API_BASE}/api/v1/blogs/${slug}`, data, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      toast.success(response.data.message);
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const updateBlog = createAsyncThunk(
+  "blog/update",
+  async ({ data, slug }: { data: BlogData; slug: string }) => {
+    try {
+      const response = await axios.put(
+        `${API_BASE}/api/v1/blogs/${slug}`,
+        data,
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
-export const getSingleBlog = createAsyncThunk("blog/single", async (slug : string) => {
-  try {
-    const response = await axios.get(`${API_BASE}/api/v1/blogs/${slug}`);
-    if (response.data.success) {
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
-      );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+export const getSingleBlog = createAsyncThunk(
+  "blog/single",
+  async (slug: string) => {
+    try {
+      const response = await axios.get(`${API_BASE}/api/v1/blogs/${slug}`);
+      if (response.data.success) {
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
-export const likeBlog = createAsyncThunk("blog/like", async (slug : string) => {
+export const likeBlog = createAsyncThunk("blog/like", async (slug: string) => {
   try {
     const response = await axios.get(`${API_BASE}/api/v1/blogs/like/${slug}`, {
       withCredentials: true,
@@ -270,224 +297,314 @@ export const likeBlog = createAsyncThunk("blog/like", async (slug : string) => {
   }
 });
 
-export const unlikeBlog = createAsyncThunk("blog/unlike", async (slug : string) => {
-  try {
-    const response = await axios.get(`${API_BASE}/api/v1/blogs/unlike/${slug}`, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const unlikeBlog = createAsyncThunk(
+  "blog/unlike",
+  async (slug: string) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE}/api/v1/blogs/unlike/${slug}`,
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
-export const addComment = createAsyncThunk("blog/comment", async ({ blogId, text }: { blogId: string, text: string }) => {
-  try {
-    const response = await axios.post(`${API_BASE}/api/v1/comments/${blogId}`, { text }, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      console.log("response", response.data);
-      toast.success(response.data.message);
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const addComment = createAsyncThunk(
+  "blog/comment",
+  async ({ blogId, text }: { blogId: string; text: string }) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE}/api/v1/comments/${blogId}`,
+        { text },
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        console.log("response", response.data);
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
-export const likeComment = createAsyncThunk("blog/likeComment", async ({ blogId, commentId }: { blogId: string, commentId: string }) => {
-  try {
-    const response = await axios.get(`${API_BASE}/api/v1/comments/like/${blogId}/${commentId}`, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      toast.success(response.data.message);
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const likeComment = createAsyncThunk(
+  "blog/likeComment",
+  async ({ blogId, commentId }: { blogId: string; commentId: string }) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE}/api/v1/comments/like/${blogId}/${commentId}`,
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
 // unlike comment
-export const unlikeComment = createAsyncThunk("blog/unlikeComment", async ({ blogId, commentId }: { blogId: string, commentId: string }) => {
-  try {
-    const response = await axios.get(`${API_BASE}/api/v1/comments/unlike/${blogId}/${commentId}`, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      toast.success(response.data.message);
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const unlikeComment = createAsyncThunk(
+  "blog/unlikeComment",
+  async ({ blogId, commentId }: { blogId: string; commentId: string }) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE}/api/v1/comments/unlike/${blogId}/${commentId}`,
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
-export const deleteComment = createAsyncThunk("blog/deleteComment", async ({ blogId, commentId }: { blogId: string, commentId: string }) => {
-  try {
-    const response = await axios.delete(`${API_BASE}/api/v1/comments/${blogId}/${commentId}`, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      toast.success(response.data.message);
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const deleteComment = createAsyncThunk(
+  "blog/deleteComment",
+  async ({ blogId, commentId }: { blogId: string; commentId: string }) => {
+    try {
+      const response = await axios.delete(
+        `${API_BASE}/api/v1/comments/${blogId}/${commentId}`,
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
-export const addReply = createAsyncThunk("blog/reply", async ({ blogId, commentId, text }: { blogId: string, commentId: string, text: string }) => {
-  try {
-    const response = await axios.post(`${API_BASE}/api/v1/replies/${blogId}/${commentId}`, { text }, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      toast.success(response.data.message);
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const addReply = createAsyncThunk(
+  "blog/reply",
+  async ({
+    blogId,
+    commentId,
+    text,
+  }: {
+    blogId: string;
+    commentId: string;
+    text: string;
+  }) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE}/api/v1/replies/${blogId}/${commentId}`,
+        { text },
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
-export const likeReply = createAsyncThunk("blog/likeReply", async ({ blogId, replyId }: { blogId: string, replyId: string }) => {
-  try {
-    const response = await axios.get(`${API_BASE}/api/v1/replies/like/${blogId}/${replyId}`, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      toast.success(response.data.message);
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const likeReply = createAsyncThunk(
+  "blog/likeReply",
+  async ({ blogId, replyId }: { blogId: string; replyId: string }) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE}/api/v1/replies/like/${blogId}/${replyId}`,
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
 // unlike reply
-export const unlikeReply = createAsyncThunk("blog/unlikeReply", async ({ blogId, replyId }: { blogId: string, replyId: string }) => {
-  try {
-    const response = await axios.get(`${API_BASE}/api/v1/replies/unlike/${blogId}/${replyId}`, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      toast.success(response.data.message);
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const unlikeReply = createAsyncThunk(
+  "blog/unlikeReply",
+  async ({ blogId, replyId }: { blogId: string; replyId: string }) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE}/api/v1/replies/unlike/${blogId}/${replyId}`,
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
 // delete reply
-export const deleteReply = createAsyncThunk("blog/deleteReply", async ({ blogId, commentId, replyId }: { blogId: string, commentId: string, replyId: string }) => {
-  try {
-    const response = await axios.delete(`${API_BASE}/api/v1/replies/${blogId}/${commentId}/${replyId}`, {
-      withCredentials: true,
-    });
-    if (response.data.success) {
-      toast.success(response.data.message);
-      return response.data;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message || "An unknown error occurred");
-      throw new Error(
-        error.response?.data?.message || "An unknown error occurred"
+export const deleteReply = createAsyncThunk(
+  "blog/deleteReply",
+  async ({
+    blogId,
+    commentId,
+    replyId,
+  }: {
+    blogId: string;
+    commentId: string;
+    replyId: string;
+  }) => {
+    try {
+      const response = await axios.delete(
+        `${API_BASE}/api/v1/replies/${blogId}/${commentId}/${replyId}`,
+        {
+          withCredentials: true,
+        }
       );
-    } else {
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      if (response.data.success) {
+        toast.success(response.data.message);
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+        throw new Error(
+          error.response?.data?.message || "An unknown error occurred"
+        );
+      } else {
+        toast.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   }
-});
+);
 
 const blogSlice = createSlice({
   name: "blog",
@@ -554,8 +671,8 @@ const blogSlice = createSlice({
       })
       .addCase(likeBlog.rejected, (state) => {
         state.likeBlogLoading = false;
-      }).
-      addCase(unlikeBlog.pending, (state) => {
+      })
+      .addCase(unlikeBlog.pending, (state) => {
         state.unlikeBlogLoading = true;
       })
       .addCase(unlikeBlog.fulfilled, (state, action) => {
@@ -602,7 +719,7 @@ const blogSlice = createSlice({
       .addCase(deleteComment.fulfilled, (state, action) => {
         state.deleteCommentLoading = false;
         state.blog = action.payload.blog;
-  })
+      })
       .addCase(deleteComment.rejected, (state) => {
         state.deleteCommentLoading = false;
       })

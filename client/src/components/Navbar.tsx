@@ -40,11 +40,11 @@ const Navbar: React.FC = () => {
     <>
       <header className="shadow px-2 md:px-8 xl:px-30 fixed top-0 left-0 right-0 z-50 bg-white">
         <div className="flex items-center justify-between max-w-screen-xl mx-auto">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             {/* Hamburger Menu */}
             <button
               onClick={toggleMobileMenu}
-              className="lg:hidden text-2xl text-gray-700"
+              className="lg:hidden text-2xl text-gray-700 cursor-pointer"
             >
               {showMobileMenu ? <FaTimes /> : <FaBars />}
             </button>

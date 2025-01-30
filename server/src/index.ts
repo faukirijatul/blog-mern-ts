@@ -30,11 +30,13 @@ import userRoutes from "./api/v1/routes/user.route";
 import blogRoutes from "./api/v1/routes/blog.route";
 import commentRoutes from "./api/v1/routes/comment.route";
 import replyRoutes from "./api/v1/routes/reply.route";
+import statisticRoutes from "./api/v1/routes/statistic.route";
 
 app.use(`${API_V1}/users`, userRoutes);
 app.use(`${API_V1}/blogs`, blogRoutes);
 app.use(`${API_V1}/comments`, commentRoutes);
 app.use(`${API_V1}/replies`, replyRoutes);
+app.use(`${API_V1}/statistics`, statisticRoutes);
 
 const PORT = process.env.PORT || 5000;
 

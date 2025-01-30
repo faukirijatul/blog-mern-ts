@@ -1,96 +1,71 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  FaCalendarAlt,
+  FaEdit,
+  FaRegBookmark,
+  FaRegComment,
+  FaRegEye,
+  FaRegHeart,
+  FaTrash,
+} from "react-icons/fa";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import Select from "react-select";
 import debounce from "lodash.debounce";
-import { Blog } from "../../../types";
 import { categories } from "../../../data/data";
+import axios from "axios";
+import { IAllBlog } from "../../../store/slices/blogSlice";
+import { formatDate } from "../../../helper/formatDate";
+import { capitalizeFirstLetter } from "../../../helper/capitalizeFirstLetter";
+import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../../../constans";
 
 const AllBlogsTable: React.FC = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredBlogs, setFilteredBlogs] = useState<any[]>([]);
-  const [categoryFilter, setCategoryFilter] = useState(null);
-  const [sortConfig, setSortConfig] = useState<{
-    key: string;
-    direction: "asc" | "desc" | null;
-  }>({
-    key: "",
-    direction: null,
-  });
+  const navigate = useNavigate();
+
+  const [blogs, setBlogs] = useState<IAllBlog[]>([]);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [order, setOrder] = useState("desc");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const fetchBlogs = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_BASE}/api/v1/blogs`, {
+        params: { search, category: selectedCategory, sortBy, order },
+      });
+      if (response.data.success) {
+        setBlogs(response.data.blogs);
+      }
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    // Dummy data for demonstration
-    const dummyBlogs = Array.from({ length: 50 }, (_, i) => ({
-      id: i + 1,
-      title: `Blog Title ${i + 1}`,
-      author: `Author ${i + 1}`,
-      category: `Category ${((i + 1) % 5) + 1}`,
-      comments: Math.floor(Math.random() * 100),
-      likes: Math.floor(Math.random() * 500),
-      saved: Math.floor(Math.random() * 300),
-      postedAt: new Date().toISOString(),
-    }));
-    setBlogs(dummyBlogs);
-    setFilteredBlogs(dummyBlogs);
-  }, []);
+    fetchBlogs();
+  }, [search, selectedCategory, sortBy, order]);
 
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    const lowercasedTerm = term.toLowerCase();
-    const filtered = blogs.filter(
-      (blog) =>
-        blog.title.toLowerCase().includes(lowercasedTerm) ||
-        blog.author.toLowerCase().includes(lowercasedTerm)
-    );
-    setFilteredBlogs(filtered);
-  };
-
-  const debouncedSearch = useMemo(() => debounce(handleSearch, 300), [blogs]);
-
-  const handleFilterChange = (selectedOption: any) => {
-    setCategoryFilter(selectedOption);
-    if (selectedOption) {
-      const filtered = blogs.filter(
-        (blog) => blog.category === selectedOption.value
-      );
-      setFilteredBlogs(filtered);
-    } else {
-      setFilteredBlogs(blogs);
-    }
-  };
+  const debouncedSearch = useCallback(
+    debounce((value) => setSearch(value), 500),
+    []
+  );
 
   const handleSort = (key: string) => {
-    let direction: "asc" | "desc" = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    } else if (sortConfig.key === key && sortConfig.direction === "desc") {
-      direction = null; // Reset sorting
-    }
-
-    setSortConfig({ key, direction });
-
-    if (!direction) {
-      setFilteredBlogs([...blogs]); // Reset to original order
-      return;
-    }
-
-    const sorted = [...filteredBlogs].sort((a, b) => {
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      return 0;
-    });
-
-    setFilteredBlogs(sorted);
+    setSortBy(key);
+    setOrder(order === "asc" ? "desc" : "asc");
   };
 
   const renderSortIcon = (key: string) => {
-    if (sortConfig.key === key) {
-      if (sortConfig.direction === "asc") return <FaSortUp />;
-      if (sortConfig.direction === "desc") return <FaSortDown />;
+    if (sortBy === key) {
+      return order === "asc" ? <FaSortUp /> : <FaSortDown />;
     }
     return <FaSort />;
   };
+
+  console.log(blogs);
 
   return (
     <div className="p-6">
@@ -100,110 +75,177 @@ const AllBlogsTable: React.FC = () => {
         <input
           type="text"
           placeholder="Search by title or author"
-          className="border border-gray-300 rounded-lg px-2 py-[6px] w-full md:w-1/3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="border border-gray-300 rounded-[5px] px-2 py-[5px] w-full md:w-1/3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           onChange={(e) => debouncedSearch(e.target.value)}
         />
         <Select
           options={categories}
           isClearable
           placeholder="Filter by category"
-          className="w-full md:w-1/4"
-          onChange={handleFilterChange}
+          className="w-full min-w-55 md:w-1/4"
+          value={categories.find((cat) => cat.value === selectedCategory)}
+          onChange={(option) => setSelectedCategory(option?.value || "")}
         />
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <thead className="bg-gray-800 text-white">
-            <tr>
-              <th className="p-4">#</th>
-              <th
-                className="p-4 cursor-pointer"
-                onClick={() => handleSort("title")}
-              >
-                <div className="flex items-center justify-between">
-                  <p>Title</p> {renderSortIcon("title")}
-                </div>
-              </th>
-              <th
-                className="p-4 cursor-pointer"
-                onClick={() => handleSort("author")}
-              >
-                <div className="flex items-center justify-between">
-                  <p>Author</p> {renderSortIcon("author")}
-                </div>
-              </th>
-              <th
-                className="p-4 cursor-pointer"
-                onClick={() => handleSort("category")}
-              >
-                <div className="flex items-center justify-between">
-                  <p>Category</p> {renderSortIcon("category")}
-                </div>
-              </th>
-              <th
-                className="p-4 cursor-pointer text-center"
-                onClick={() => handleSort("comments")}
-              >
-                <div className="flex items-center justify-between">
-                  <p>Comments</p> {renderSortIcon("comments")}
-                </div>
-              </th>
-              <th
-                className="p-4 cursor-pointer text-center"
-                onClick={() => handleSort("likes")}
-              >
-                <div className="flex items-center justify-between">
-                  <p>Likes</p> {renderSortIcon("likes")}
-                </div>
-              </th>
-              <th
-                className="p-4 cursor-pointer text-center"
-                onClick={() => handleSort("saved")}
-              >
-                <div className="flex items-center justify-between">
-                  <p>Saved</p> {renderSortIcon("saved")}
-                </div>
-              </th>
-              <th
-                className="p-4 cursor-pointer"
-                onClick={() => handleSort("postedAt")}
-              >
-                <div className="flex items-center justify-between">
-                  <p>Posted At</p> {renderSortIcon("postedAt")}
-                </div>
-              </th>
-              <th className="p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredBlogs.map((blog, index) => (
-              <tr
-                key={blog.id}
-                className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}
-              >
-                <td className="p-4 text-center">{index + 1}</td>
-                <td className="p-4">{blog.title}</td>
-                <td className="p-4">{blog.author}</td>
-                <td className="p-4">{blog.category}</td>
-                <td className="p-4 text-center">{blog.comments}</td>
-                <td className="p-4 text-center">{blog.likes}</td>
-                <td className="p-4 text-center">{blog.saved}</td>
-                <td className="p-4">
-                  {new Date(blog.postedAt).toLocaleString()}
-                </td>
-                <td className="p-4 flex items-center justify-center gap-2">
-                  <button className="text-blue-500 hover:text-blue-700">
-                    <FaEdit />
-                  </button>
-                  <button className="text-red-500 hover:text-red-700">
-                    <FaTrash />
-                  </button>
-                </td>
+      <div className="overflow-x-auto hidden lg:block">
+        <div className="min-w-[1100px]">
+          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden text-sm">
+            <thead className="bg-gray-800 text-white">
+              <tr>
+                <th className="p-4">#</th>
+                <th
+                  className="p-4 cursor-pointer"
+                  onClick={() => handleSort("title")}
+                >
+                  <div className="flex items-center justify-between">
+                    <p>Title</p> {renderSortIcon("title")}
+                  </div>
+                </th>
+                <th
+                  className="p-4 cursor-pointer"
+                  onClick={() => handleSort("authorData.name")}
+                >
+                  <div className="flex items-center justify-between">
+                    <p>Author</p> {renderSortIcon("authorData.name")}
+                  </div>
+                </th>
+                <th
+                  className="p-4 cursor-pointer"
+                  onClick={() => handleSort("category")}
+                >
+                  <div className="flex items-center justify-between">
+                    <p>Category</p> {renderSortIcon("category")}
+                  </div>
+                </th>
+                <th
+                  className="p-4 cursor-pointer text-center"
+                  onClick={() => handleSort("commentsCount")}
+                >
+                  <div className="flex items-center justify-between">
+                    <p>Comments</p> {renderSortIcon("commentsCount")}
+                  </div>
+                </th>
+                <th
+                  className="p-4 cursor-pointer text-center"
+                  onClick={() => handleSort("likesCount")}
+                >
+                  <div className="flex items-center justify-between">
+                    <p>Likes</p> {renderSortIcon("likesCount")}
+                  </div>
+                </th>
+                <th
+                  className="p-4 cursor-pointer text-center"
+                  onClick={() => handleSort("saves")}
+                >
+                  <div className="flex items-center justify-between">
+                    <p>Saved</p> {renderSortIcon("saves")}
+                  </div>
+                </th>
+                <th
+                  className="p-4 cursor-pointer"
+                  onClick={() => handleSort("createdAt")}
+                >
+                  <div className="flex items-center justify-between">
+                    <p>Posted At</p> {renderSortIcon("createdAt")}
+                  </div>
+                </th>
+                <th className="p-4">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {blogs.map((blog, index) => (
+                <tr
+                  key={blog._id}
+                  className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}
+                >
+                  <td className="p-4 text-center">{index + 1}</td>
+                  <td className="p-4">{blog.title}</td>
+                  <td className="p-4">{blog.authorData.name}</td>
+                  <td className="p-4">
+                    {capitalizeFirstLetter(blog.category || "")}
+                  </td>
+                  <td className="p-4 text-center">{blog.commentsCount}</td>
+                  <td className="p-4 text-center">{blog.likesCount}</td>
+                  <td className="p-4 text-center">{blog.saves}</td>
+                  <td className="p-4">{formatDate(blog.createdAt)}</td>
+                  <td className="p-4 flex items-center justify-center gap-2">
+                    <button
+                      className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                      onClick={() => navigate(`/admin/edit/${blog.slug}`)}
+                    >
+                      <FaEdit />
+                    </button>
+                    <button className="text-red-500 hover:text-red-700">
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="space-y-4 lg:hidden">
+        {blogs.map((blog) => (
+          <div
+            key={blog._id}
+            className="relative flex items-start gap-4 bg-white p-4 border border-gray-300 shadow"
+          >
+            <div className="min-w-32">
+              <img
+                src={blog.thumbnail.url}
+                alt={blog.title}
+                className="w-32 h-32 object-cover"
+              />
+              <div className="p-4 flex items-center justify-center gap-2">
+                <button
+                  className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                  onClick={() => navigate(`/admin/edit/${blog.slug}`)}
+                >
+                  <FaEdit />
+                </button>
+                <button className="text-red-500 hover:text-red-700">
+                  <FaTrash />
+                </button>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold line-clamp-2">
+                {blog.title}
+              </h4>
+              <div className="text-gray-500 text-sm flex items-center gap-1 flex-wrap">
+                <p className="flex items-center gap-1">
+                  By {blog.authorData.name}
+                </p>{" "}
+                .{" "}
+                <p className="flex items-center gap-1">
+                  {blog.commentsCount} <FaRegComment />
+                </p>{" "}
+                .{" "}
+                <p className="flex items-center gap-1">
+                  {blog.likesCount} <FaRegHeart />
+                </p>{" "}
+                .{" "}
+                <p className="flex items-center gap-1">
+                  {blog.views} <FaRegEye />
+                </p>{" "}
+                .{" "}
+                <p className="flex items-center gap-1">
+                  {blog.saves} <FaRegBookmark />
+                </p>{" "}
+                .{" "}
+                <p className="flex items-center gap-1">
+                  <FaCalendarAlt /> {formatDate(blog.createdAt)}
+                </p>
+              </div>
+              <p className="text-gray-900 line-clamp-4 mt-2">
+                {blog.highlight}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

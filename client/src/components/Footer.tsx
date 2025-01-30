@@ -3,10 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 import logo from "../assets/logo.svg";
 import { categories } from "../data/data";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const Footer: React.FC = () => {
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
+
+  const { visits } = useSelector((state : RootState ) => state.statistic);
 
   return (
     <footer className="bg-gray-800 text-white px-2 md:px-8 xl:px-30">
@@ -24,6 +28,8 @@ const Footer: React.FC = () => {
           <p className="text-gray-400 px-3 text-sm text-center md:px-0 md:text-left">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </p>
+
+          <p className="text-gray-200 px-3 text-sm text-center md:px-0 md:text-left mt-5">Total Visits: {visits.toLocaleString("id-ID")}</p>
         </div>
 
         {/* Quick Links */}
@@ -140,7 +146,7 @@ const Footer: React.FC = () => {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
           >
-            Your Company
+            Logo Ipsum
           </span>
           . All Rights Reserved.
         </p>
