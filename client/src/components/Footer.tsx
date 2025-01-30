@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 import logo from "../assets/logo.svg";
+import { categories } from "../data/data";
 
 const Footer: React.FC = () => {
   const navigate = useNavigate();
@@ -72,42 +73,19 @@ const Footer: React.FC = () => {
         <div className="flex flex-col items-center lg:w-1/4">
           <div className="text-lg font-medium mb-4">List Category</div>
           <ul className="space-y-1 flex flex-col items-center">
-            <li>
-              <Link
-                to="/category/category1"
-                className="hover:text-gray-400"
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              >
-                Category 1
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/category/category2"
-                className="hover:text-gray-400"
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              >
-                Category 2
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/category/category3"
-                className="hover:text-gray-400"
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              >
-                Category 3
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/category/category4"
-                className="hover:text-gray-400"
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              >
-                Category 4
-              </Link>
-            </li>
+            {
+              categories.map((category) => (
+                <li key={category.value}>
+                <Link
+                  to={`/category/${category.value}`}
+                  className="hover:text-gray-400"
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                >
+                  {category.label}
+                </Link>
+              </li>
+              ))
+            }
           </ul>
         </div>
 

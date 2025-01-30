@@ -141,6 +141,9 @@ export const saveBlog = async (req: any, res: Response): Promise<any> => {
       });
     }
 
+    blog.saves += 1;
+    await blog.save(); 
+
     user.savedBlogs && user.savedBlogs.push(blogId);
     await user.save();
 
@@ -188,6 +191,9 @@ export const unsaveBlog = async (req: any, res: Response): Promise<any> => {
         message: "Blog not saved",
       });
     }
+
+    blog.saves -= 1;
+    await blog.save(); 
 
     user.savedBlogs = user.savedBlogs.filter((id) => id.toString() !== blogId.toString());
     await user.save();

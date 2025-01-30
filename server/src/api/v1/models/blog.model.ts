@@ -13,6 +13,7 @@ export interface IBlog extends mongoose.Document {
   author: mongoose.Schema.Types.ObjectId;
   category: string;
   likes: mongoose.Schema.Types.ObjectId[];
+  saves: number;
   views: number;
   comments?: mongoose.Schema.Types.ObjectId[];
   slug: string;
@@ -34,6 +35,7 @@ const blogSchema: mongoose.Schema<IBlog> = new mongoose.Schema(
     },
     category: { type: String, required: true },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    saves: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     slug: { type: String },

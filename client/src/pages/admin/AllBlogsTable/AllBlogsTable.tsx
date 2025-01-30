@@ -4,6 +4,7 @@ import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import Select from "react-select";
 import debounce from "lodash.debounce";
 import { Blog } from "../../../types";
+import { categories } from "../../../data/data";
 
 const AllBlogsTable: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -83,14 +84,6 @@ const AllBlogsTable: React.FC = () => {
     setFilteredBlogs(sorted);
   };
 
-  const categories = [
-    { value: "Category 1", label: "Category 1" },
-    { value: "Category 2", label: "Category 2" },
-    { value: "Category 3", label: "Category 3" },
-    { value: "Category 4", label: "Category 4" },
-    { value: "Category 5", label: "Category 5" },
-  ];
-
   const renderSortIcon = (key: string) => {
     if (sortConfig.key === key) {
       if (sortConfig.direction === "asc") return <FaSortUp />;
@@ -107,7 +100,7 @@ const AllBlogsTable: React.FC = () => {
         <input
           type="text"
           placeholder="Search by title or author"
-          className="border border-gray-300 rounded-lg p-2 w-full md:w-1/3"
+          className="border border-gray-300 rounded-lg px-2 py-[6px] w-full md:w-1/3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           onChange={(e) => debouncedSearch(e.target.value)}
         />
         <Select
