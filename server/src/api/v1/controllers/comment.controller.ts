@@ -28,14 +28,14 @@ export const createComment = async (req: any, res: Response): Promise<any> => {
 
     const populatedBlog = await populateBlog(blog.slug);
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Comment created successfully",
       blog: populatedBlog,
     });
   } catch (error) {
     console.log("Error creating comment", error);
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: "Failed to create comment",
     });
@@ -65,14 +65,14 @@ export const likeComment = async (req: any, res: Response): Promise<any> => {
 
     const populatedBlog = await populateBlog(blog.slug);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Comment liked successfully",
       blog: populatedBlog,
     });
   } catch (error) {
     console.log("Error liking comment", error);
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: "Failed to like comment",
     });
@@ -103,14 +103,14 @@ export const unlikeComment = async (req: any, res: Response): Promise<any> => {
 
     const populatedBlog = await populateBlog(blog.slug);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Comment unliked successfully",
       blog: populatedBlog,
     });
   } catch (error) {
     console.log("Error unliking comment", error);
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: "Failed to unlike comment",
     });
@@ -152,14 +152,14 @@ export const deleteComment = async (req: any, res: Response): Promise<any> => {
 
     const populatedBlog = await populateBlog(blog.slug);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Comment deleted successfully",
       blog: populatedBlog,
     });
   } catch (error) {
     console.log("Error deleting comment", error);
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: "Failed to delete comment",
     });

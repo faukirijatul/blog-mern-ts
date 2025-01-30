@@ -13,6 +13,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FaSpinner } from "react-icons/fa";
+import { categories } from "../../../data/data";
 
 interface FormData {
   title: string;
@@ -21,13 +22,6 @@ interface FormData {
   thumbnail: string;
   content: string;
 }
-
-const categories: { value: string; label: string }[] = [
-  { value: "basics", label: "Basics" },
-  { value: "frontend", label: "Frontend" },
-  { value: "backend", label: "Backend" },
-  { value: "fullstack", label: "Fullstack" },
-];
 
 const BlogContentForm: React.FC = () => {
   const navigate = useNavigate();

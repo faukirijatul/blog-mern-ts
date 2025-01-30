@@ -24,11 +24,17 @@ export const checkAuthAndRefreshToken = async (
         token,
         process.env.JWT_SECRET as Secret
       ) as JwtPayload;
-        const user = await User.findById(decoded.id);
-        if (user) {
-          req.user = user;
-          return next();
-        }
+      const user = await User.findById(decoded.id);
+
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      req.user = user;
+      return next();
     } catch (error) {
       return res.status(401).json({
         success: false,
@@ -43,11 +49,17 @@ export const checkAuthAndRefreshToken = async (
       ) as JwtPayload;
 
       const user = await User.findById(decoded.id);
-        if (user) {
-          req.user = user;
-          setTokenCookie(req.user, res);
-          return next();
-        }
+
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      req.user = user;
+      setTokenCookie(req.user, res);
+      return next();
     } catch (error) {
       console.log("Error in checkAuthAndRefreshToken: ", error);
       return res.status(401).json({

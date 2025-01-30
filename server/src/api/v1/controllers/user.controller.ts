@@ -50,20 +50,29 @@ export const login = async (req: any, res: Response): Promise<any> => {
   }
 };
 
-export const getCurrentUser = async (req: any, res: Response): Promise<any> => {
+export const getCurrentUser = async (req: any, res: any): Promise<any> => {
   try {
     const user = await User.findById(req.user._id);
 
-    res.status(200).json({
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "User not found" 
+      });
+    }
+
+    return res.status(200).json({
       success: true,
       user,
     });
   } catch (error) {
     console.log("Error in get current user controller: ", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to get current user",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to get current user",
+      });
+    }
   }
 };
 
@@ -88,13 +97,13 @@ export const getAllUsers = async (req: any, res: Response): Promise<any>  => {
   try {
     const users = await User.find();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       data: users,
     });
   } catch (error) {
     console.log("Error in get all users controller: ", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Failed to get users",
     });

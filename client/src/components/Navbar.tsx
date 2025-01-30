@@ -13,6 +13,14 @@ import { AppDispatch, RootState } from "../store/store";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/userSlice";
 
+const navbarMenu = [
+  "Home",
+  "Basics",
+  "Frontend",
+  "Backend",
+  "Fullstack",
+]
+
 const Navbar: React.FC = () => {
   const { user } = useSelector((state : RootState ) => state.user);
   const dispatch : AppDispatch = useDispatch();
@@ -83,19 +91,13 @@ const Navbar: React.FC = () => {
           <nav
             className={`hidden lg:flex flex-row items-center gap-6 relative bg-transparent w-auto p-0`}
           >
-            {[
-              "Home",
-              "Category 1",
-              "Category 2",
-              "Category 3",
-              "Category 4",
-            ].map((menu, index) => (
+            {navbarMenu.map((menu, index) => (
               <Link
                 key={index}
                 to={
                   menu === "Home"
                     ? "/"
-                    : `/category/${menu.toLowerCase().replace(" ", "-")}`
+                    : `/category/${menu.toLowerCase()}`
                 }
                 className="menu-item relative inline-block px-4 py-5 w-fit"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -111,19 +113,13 @@ const Navbar: React.FC = () => {
               showMobileMenu ? "block" : "hidden"
             } flex flex-col lg:hidden items-center absolute top-16 left-0 bg-white w-full shadow-lg p-4`}
           >
-            {[
-              "Home",
-              "Category 1",
-              "Category 2",
-              "Category 3",
-              "Category 4",
-            ].map((menu, index) => (
+            {navbarMenu.map((menu, index) => (
               <Link
                 key={index}
                 to={
                   menu === "Home"
                     ? "/"
-                    : `/category/${menu.toLowerCase().replace(" ", "-")}`
+                    : `/category/${menu.toLowerCase()}`
                 }
                 className="menu-item relative inline-block px-4 py-5 w-fit"
                 onClick={() => {
@@ -174,7 +170,7 @@ const Navbar: React.FC = () => {
                     </Link>
                     {user && user.role === "admin" && (
                       <a
-                      href="/admin"
+                      href="/admin/dashboard"
                       className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       onClick={() => setShowDropdown(false)}
                     >

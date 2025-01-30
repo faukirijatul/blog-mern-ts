@@ -371,3 +371,10 @@ export const dummyUser = {
   avatar:
     "https://static.republika.co.id/uploads/images/detailnews/foto-profil-_170704110636-890.jpg",
 };
+
+export const categories: { value: string; label: string }[] = [
+  { value: "basics", label: "Basics" },
+  { value: "frontend", label: "Frontend" },
+  { value: "backend", label: "Backend" },
+  { value: "fullstack", label: "Fullstack" },
+];

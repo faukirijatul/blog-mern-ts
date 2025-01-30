@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import logo from "../assets/logo.svg";
 
 const Footer: React.FC = () => {
   const navigate = useNavigate();
@@ -17,9 +18,9 @@ const Footer: React.FC = () => {
             className="text-2xl font-semibold mb-4"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
-            Logo
+            <img src={logo} alt="Logo" className="h-8" />
           </Link>
-          <p className="text-gray-400 px-3 text-center md:px-0 md:text-left">
+          <p className="text-gray-400 px-3 text-sm text-center md:px-0 md:text-left">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </p>
         </div>

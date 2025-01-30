@@ -5,7 +5,7 @@ import { Response } from "express";
 import { populateBlog } from "./blog.controller";
 
 // create new reply
-export const createReply = async (req: any, res: Response) : Promise<any> => {
+export const createReply = async (req: any, res: Response): Promise<any> => {
   try {
     const { commentId } = req.params;
     const { blogId } = req.params;
@@ -52,7 +52,7 @@ export const createReply = async (req: any, res: Response) : Promise<any> => {
 };
 
 // like a reply
-export const likeReply = async (req: any, res: Response) : Promise<any> => {
+export const likeReply = async (req: any, res: Response): Promise<any> => {
   try {
     const { replyId } = req.params;
     const { blogId } = req.params;
@@ -84,13 +84,11 @@ export const likeReply = async (req: any, res: Response) : Promise<any> => {
 
     const populatedBlog = await populateBlog(blog.slug);
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Reply liked successfully",
-        blog: populatedBlog,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Reply liked successfully",
+      blog: populatedBlog,
+    });
   } catch (error) {
     console.log("Error liking reply", error);
     return res
@@ -100,7 +98,7 @@ export const likeReply = async (req: any, res: Response) : Promise<any> => {
 };
 
 // unlike a reply
-export const unlikeReply = async (req: any, res: Response) : Promise<any> => {
+export const unlikeReply = async (req: any, res: Response): Promise<any> => {
   try {
     const { replyId } = req.params;
     const { blogId } = req.params;
@@ -133,13 +131,11 @@ export const unlikeReply = async (req: any, res: Response) : Promise<any> => {
 
     const populatedBlog = await populateBlog(blog.slug);
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Reply unliked successfully",
-        blog: populatedBlog,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Reply unliked successfully",
+      blog: populatedBlog,
+    });
   } catch (error) {
     console.log("Error unliking reply", error);
     return res
@@ -149,54 +145,53 @@ export const unlikeReply = async (req: any, res: Response) : Promise<any> => {
 };
 
 // delete a reply
-export const deleteReply = async (req: any, res: Response) : Promise<any> => {
-    try {
-        const { replyId } = req.params;
-        const { commentId } = req.params;
-        const { blogId } = req.params;
-    
-        const reply = await Reply.findById(replyId);
-    
-        if (!reply) {
-          return res
-            .status(404)
-            .json({ success: false, message: "Reply not found" });
-        }
+export const deleteReply = async (req: any, res: Response): Promise<any> => {
+  try {
+    const { replyId } = req.params;
+    const { commentId } = req.params;
+    const { blogId } = req.params;
 
-        const comment = await Comment.findById(commentId);
+    const reply = await Reply.findById(replyId);
 
-        if (!comment) {
-            return res
-              .status(404)
-              .json({ success: false, message: "Comment not found" });
-        }
-
-        const blog = await Blog.findById(blogId);
-
-        if (!blog) {
-            return res
-              .status(404)
-              .json({ success: false, message: "Blog not found" });
-        }
-
-        comment.replies = comment.replies && comment.replies.filter((id) => id !== replyId);
-        await comment.save();
-
-        await Reply.findByIdAndDelete(replyId);
-
-        const populatedBlog = await populateBlog(blog.slug);
-
-        return res
-          .status(200)
-          .json({
-            success: true,
-            message: "Reply deleted successfully",
-            blog: populatedBlog,
-          })
-    } catch (error) {
-        console.log("Error deleting reply", error);
-        return res
-          .status(500)
-          .json({ success: false, message: "Failed to delete reply" });
+    if (!reply) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Reply not found" });
     }
+
+    const comment = await Comment.findById(commentId);
+
+    if (!comment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Comment not found" });
+    }
+
+    const blog = await Blog.findById(blogId);
+
+    if (!blog) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found" });
+    }
+
+    comment.replies =
+      comment.replies && comment.replies.filter((id) => id !== replyId);
+    await comment.save();
+
+    await Reply.findByIdAndDelete(replyId);
+
+    const populatedBlog = await populateBlog(blog.slug);
+
+    return res.status(200).json({
+      success: true,
+      message: "Reply deleted successfully",
+      blog: populatedBlog,
+    });
+  } catch (error) {
+    console.log("Error deleting reply", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to delete reply" });
+  }
 };
