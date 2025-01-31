@@ -31,7 +31,6 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <>
       <header className="shadow px-2 md:px-8 xl:px-30 fixed top-0 left-0 right-0 z-50 bg-white">
         <div className="flex items-center justify-between max-w-screen-xl mx-auto">
           <div className="flex items-center gap-4">
@@ -161,7 +160,6 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </header>
-    </>
   );
 };
 

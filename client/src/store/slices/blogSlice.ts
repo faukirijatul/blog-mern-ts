@@ -280,6 +280,7 @@ export const likeBlog = createAsyncThunk("blog/like", async (slug: string) => {
       withCredentials: true,
     });
     if (response.data.success) {
+      toast.success(response.data.message);
       return response.data;
     } else {
       throw new Error(response.data.message);
@@ -308,6 +309,7 @@ export const unlikeBlog = createAsyncThunk(
         }
       );
       if (response.data.success) {
+        toast.success(response.data.message);
         return response.data;
       } else {
         throw new Error(response.data.message);
@@ -340,7 +342,6 @@ export const addComment = createAsyncThunk(
         }
       );
       if (response.data.success) {
-        console.log("response", response.data);
         toast.success(response.data.message);
         return response.data;
       } else {

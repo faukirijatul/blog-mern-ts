@@ -53,6 +53,10 @@ const BlogList: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState(category || "");
 
   useEffect(() => {
+    document.title = "Fauki Personal Blog";
+  }, [])
+
+  useEffect(() => {
     if (category) {
       setSelectedCategory(category);
     }

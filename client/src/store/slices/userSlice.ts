@@ -156,6 +156,7 @@ export const saveBlog = createAsyncThunk(
         }
       );
       if (response.data.success) {
+        toast.success(response.data.message);
         return response.data;
       } else {
         throw new Error(response.data.message);
@@ -187,6 +188,7 @@ export const unsaveBlog = createAsyncThunk(
         }
       );
       if (response.data.success) {
+        toast.success(response.data.message);
         return response.data;
       } else {
         throw new Error(response.data.message);

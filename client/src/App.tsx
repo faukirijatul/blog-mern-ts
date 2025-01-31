@@ -33,12 +33,12 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const UserRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, currentUserLoading } = useSelector(
+  const { user, currentUserLoading, isAuthenticated } = useSelector(
     (state: RootState) => state.user
   );
 
   if (currentUserLoading) return <Loading />;
-  if (!user && !currentUserLoading) return <Navigate to="/" />;
+  if (!user && !isAuthenticated) return <Navigate to="/" />;
 
   return <>{children}</>;
 };

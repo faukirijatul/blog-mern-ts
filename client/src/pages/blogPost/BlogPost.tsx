@@ -137,7 +137,7 @@ const BlogPost: React.FC = () => {
               </div>
             )}
             <div
-              className="prose prose-sm md:prose-base lg:prose-lg mb-6 text-justify space-y-4"
+              className="prose prose-sm md:prose-base lg:prose-lg mb-6 space-y-4"
               dangerouslySetInnerHTML={{ __html: blog.content }}
             ></div>
             <div className="text-gray-600 font-medium">

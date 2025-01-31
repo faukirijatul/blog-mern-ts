@@ -122,10 +122,10 @@ const Profile: React.FC = () => {
         </div>
 
         {/* Saved Blogs Section */}
-        <div className="flex-2">
+        <div className="flex-2 min-h-[calc(100vh-760px)]">
           <h3 className="text-xl font-bold mb-4">Saved Blogs</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {savedBlogs &&
+            {savedBlogs && savedBlogs.length > 0 ?
               savedBlogs.map((blog: ISavedBlogs) => (
                 <div
                   key={blog._id}
@@ -158,7 +158,9 @@ const Profile: React.FC = () => {
                     />
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div className="bg-white p-3 shadow border border-gray-300">No Saved Blogs</div>
+              )}
           </div>
         </div>
       </div>
