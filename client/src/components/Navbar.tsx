@@ -129,7 +129,7 @@ const Navbar: React.FC = () => {
 
                 {/* Dropdown menu */}
                 {showDropdown && (
-                  <div className="absolute -right-5 top-11 mt-2 bg-white text-black shadow-lg rounded border border-gray-300 w-[200px]">
+                  <div className="absolute -right-1 top-11 mt-2 bg-white text-black shadow-lg rounded border border-gray-300 w-[200px]">
                     <Link
                       to="/profile"
                       className="block px-4 py-2 hover:bg-gray-100"
