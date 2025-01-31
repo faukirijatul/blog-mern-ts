@@ -32,7 +32,7 @@ const Advertisement: React.FC = () => {
           >
             <img
               src={randomOneBanner?.image.url}
-              alt="Advertisement"
+              alt={randomOneBanner?.title}
               className="w-full h-auto"
             />
           </a>
