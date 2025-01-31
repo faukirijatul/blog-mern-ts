@@ -120,7 +120,7 @@ const BlogList: React.FC = () => {
           <input
             type="text"
             placeholder="Search blogs..."
-            className="border border-gray-300 px-2 py-[6px] rounded-[5px] w-full md:w-1/3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="text-sm md:text-base border border-gray-300 px-2 py-[6px] rounded-[5px] w-full md:w-1/3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             onChange={(e) => debouncedSearch(e.target.value)}
           />
 
@@ -131,7 +131,7 @@ const BlogList: React.FC = () => {
               placeholder="Select Category"
               value={categories.find((cat) => cat.value === selectedCategory)}
               onChange={(option) => setSelectedCategory(option?.value || "")}
-              className="w-full sm:w-1/2"
+              className="w-full sm:w-1/2 text-sm md:text-base"
               isClearable
             />
             <Select
@@ -139,7 +139,7 @@ const BlogList: React.FC = () => {
               placeholder="Sort By"
               value={sortOptions.find((opt) => opt.value === sortBy)}
               onChange={(option) => setSortBy(option?.value || "createdAt")}
-              className="w-full sm:w-1/2"
+              className="w-full sm:w-1/2 text-sm md:text-base"
               isClearable
             />
           </div>
@@ -149,7 +149,7 @@ const BlogList: React.FC = () => {
           {/* Blog Section */}
           <div className="flex-2">
             <div className=" mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-bold">All Blogs</h3>
+              <h3 className="text-base md:text-xl font-bold">All Blogs</h3>
               <div>
                 {order === "desc" ? (
                   <FaArrowUp
@@ -168,17 +168,17 @@ const BlogList: React.FC = () => {
               {blogs.map((blog) => (
                 <div
                   key={blog._id}
-                  className="relative flex items-start gap-4 bg-white p-4 border border-gray-300 shadow cursor-pointer hover:bg-gray-100"
+                  className="relative flex items-start gap-4 bg-white p-2 md:p-4 border border-gray-300 shadow cursor-pointer hover:bg-gray-100"
                   onClick={() => {
                     navigate(`/blog/${blog.slug}`);
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
-                  <div className="min-w-32">
+                  <div className="min-w-20 md:min-w-32">
                     <img
                       src={blog.thumbnail.url}
                       alt={blog.title}
-                      className="w-32 h-32 object-cover"
+                      className="w-20 md:w-32 h-20 md:h-32 object-cover"
                     />
                     {user && user.role === "admin" && (
                       <div className="p-4 flex items-center justify-center gap-2">
@@ -195,10 +195,10 @@ const BlogList: React.FC = () => {
                     )}
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold line-clamp-2">
+                    <h4 className="text-base md:text-lg font-semibold line-clamp-2">
                       {blog.title}
                     </h4>
-                    <div className="text-gray-500 text-sm flex items-center gap-1 flex-wrap">
+                    <div className="text-gray-500 text-xs md:text-sm flex items-center gap-1 flex-wrap">
                       <p className="flex items-center gap-1">
                         By {blog.authorData.name}
                       </p>{" "}
@@ -219,13 +219,13 @@ const BlogList: React.FC = () => {
                         <FaCalendarAlt /> {formatDate(blog.createdAt)}
                       </p>
                     </div>
-                    <p className="text-gray-900 line-clamp-3 mt-2">
+                    <p className="text-gray-900 line-clamp-3 mt-2 text-sm md:text-base">
                       {blog.highlight}
                     </p>
                   </div>
 
                   <div
-                    className="absolute top-2 right-2 cursor-pointer"
+                    className="absolute top-1 md:top-2 right-1 md:right-2 cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {user &&

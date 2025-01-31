@@ -61,17 +61,17 @@ const BlogCarousel: React.FC = () => {
               />
               <div className="p-4">
                 <h3
-                  className="text-lg font-medium hover:underline mb-1 cursor-pointer line-clamp-1"
+                  className="md:text-lg font-medium hover:underline mb-1 cursor-pointer line-clamp-1"
                   onClick={() => navigate(`/blog/${blog.slug}`)}
                   title={blog.title}
                 >
                   {blog.title}
                 </h3>
-                <p className="text-gray-500 text-sm mb-4">
+                <p className="text-gray-500 text-xs md:text-sm mb-4">
                   By {blog.authorData.name} | {formatDate(blog.createdAt)}
                 </p>
                 <span
-                  className="text-sm px-4 py-2 font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                  className="text-xs md:text-sm px-4 py-2 font-medium border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
                   onClick={() => navigate(`/category/${blog.category}`)}
                 >
                   {capitalizeFirstLetter(blog.category)}

@@ -36,7 +36,7 @@ const LatestAndMostPopular: React.FC = () => {
       <div className="flex flex-col md:flex-row gap-4">
         {/* Latest Post */}
         <div className="flex-1">
-          <h3 className="text-xl font-bold mb-4">Latest Posts</h3>
+          <h3 className="text-base md:text-xl font-bold mb-4">Latest Posts</h3>
           <div className="space-y-2">
             {fiveLatestBlogs.map((blog) => (
               <div
@@ -50,16 +50,16 @@ const LatestAndMostPopular: React.FC = () => {
                 <img
                   src={blog.thumbnail.url}
                   alt={blog.title}
-                  className="w-24 h-24 object-cover"
+                  className="w-16 md:w-24 h-16 md:h-24 object-cover"
                 />
                 <div>
                   <h4
-                    className="text-lg font-semibold line-clamp-1"
+                    className="text-base md:text-lg font-semibold line-clamp-1"
                     title={blog.title}
                   >
                     {blog.title}
                   </h4>
-                  <div className="text-gray-500 text-sm flex items-center gap-1 flex-wrap">
+                  <div className="text-gray-500 text-xs md:text-sm flex items-center gap-1 flex-wrap">
                     <p className="flex items-center gap-1">
                       By {blog.authorData.name}
                     </p>{" "}
@@ -76,7 +76,7 @@ const LatestAndMostPopular: React.FC = () => {
                       {blog.views} <FaRegEye />
                     </p>
                   </div>
-                  <p className="text-gray-500 text-sm flex items-center gap-1 mt-2">
+                  <p className="text-gray-500 text-xs md:text-sm flex items-center gap-1 mt-2">
                     <FaCalendarAlt /> {formatDate(blog.createdAt)}
                   </p>
                 </div>
@@ -87,7 +87,7 @@ const LatestAndMostPopular: React.FC = () => {
 
         {/* Most Popular */}
         <div className="flex-1">
-          <h3 className="text-xl font-bold mb-4">Most Popular</h3>
+          <h3 className="text-base md:text-xl font-bold mb-4">Most Popular</h3>
           <div className="space-y-2">
             {fivePopularBlogs.map((blog) => (
               <div
@@ -101,7 +101,7 @@ const LatestAndMostPopular: React.FC = () => {
                 <img
                   src={blog.thumbnail.url}
                   alt={blog.title}
-                  className="w-24 h-24 object-cover"
+                  className="w-16 md:w-24 h-16 md:h-24 object-cover"
                 />
                 <div>
                   <h4
@@ -110,7 +110,7 @@ const LatestAndMostPopular: React.FC = () => {
                   >
                     {blog.title}
                   </h4>
-                  <div className="text-gray-500 text-sm flex items-center gap-1 flex-wrap">
+                  <div className="text-gray-500 text-xs md:text-sm flex items-center gap-1 flex-wrap">
                     <p className="flex items-center gap-1">
                       By {blog.authorData.name}
                     </p>{" "}
@@ -127,7 +127,7 @@ const LatestAndMostPopular: React.FC = () => {
                       {blog.views} <FaRegEye />
                     </p>
                   </div>
-                  <p className="text-gray-500 text-sm flex items-center gap-1 mt-2">
+                  <p className="text-gray-500 text-xs md:text-sm flex items-center gap-1 mt-2">
                     <FaCalendarAlt /> {formatDate(blog.createdAt)}
                   </p>
                 </div>

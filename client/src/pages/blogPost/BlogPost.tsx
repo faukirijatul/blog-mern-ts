@@ -117,8 +117,8 @@ const BlogPost: React.FC = () => {
               alt={blog.title}
               className="w-full h-64 object-cover rounded-lg mb-4"
             />
-            <h1 className="text-2xl font-bold mb-2">{blog.title}</h1>
-            <p className="text-gray-500 mb-4">
+            <h1 className="text-xl md:text-2xl font-bold mb-2">{blog.title}</h1>
+            <p className="text-gray-500 mb-4 text-sm md:text-base">
               By {blog.author?.name} | {formatDate(blog.createdAt)}
             </p>
             {user && user.role === "admin" && (

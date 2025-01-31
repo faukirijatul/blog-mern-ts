@@ -6,7 +6,7 @@ const LatestAndMostPopularSkeleton: React.FC = () => {
       <div className="flex flex-col md:flex-row gap-4">
         {/* Latest Post Skeleton */}
         <div className="flex-1">
-          <h3 className="text-xl font-bold mb-4">Latest Posts</h3>
+          <h3 className="text-base md:text-xl font-bold mb-4">Latest Posts</h3>
           <div className="space-y-2">
             {[...Array(5)].map((_, index) => (
               <div key={index} className="flex items-start gap-4 bg-white p-2 border border-gray-300 shadow animate-pulse">
