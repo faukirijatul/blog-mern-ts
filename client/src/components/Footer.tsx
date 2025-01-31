@@ -17,23 +17,23 @@ const Footer: React.FC = () => {
       {/* Bagian atas Footer */}
       <div className="flex flex-col md:flex-row items-center md:items-start justify-between space-y-8 lg:space-y-0  max-w-screen-xl mx-auto pt-4">
         {/* Logo */}
-        <div className="flex flex-col items-center md:items-start lg:w-1/4">
+        <div className="flex flex-col items-center md:items-start flex-1">
           <Link
             to="/"
-            className="text-2xl font-semibold mb-4"
+            className="text-2xl font-semibold mb-4 flex items-center gap-2"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
-            <img src={logo} alt="Logo" className="h-8" />
+            <img src={logo} alt="Logo" className="h-8" /> <span className="text-gray-300 italic">fauki</span>
           </Link>
-          <p className="text-gray-400 px-3 text-sm text-center md:px-0 md:text-left">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <p className="text-gray-300 px-3 text-sm text-center md:px-0 md:text-left">
+            A personal blog sharing tips and experiences on software development, from coding to best practices in app development.
           </p>
 
           <p className="text-gray-200 px-3 text-sm text-center md:px-0 md:text-left mt-5">Total Visits: {visits.toLocaleString("id-ID")}</p>
         </div>
 
         {/* Quick Links */}
-        <div className="flex flex-col items-center lg:w-1/4">
+        <div className="flex flex-col items-center flex-1">
           <div className="text-lg font-medium mb-4">Quick Links</div>
           <ul className="space-y-1 flex flex-col items-center">
             <li>
@@ -76,7 +76,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* List Category */}
-        <div className="flex flex-col items-center lg:w-1/4">
+        <div className="flex flex-col items-center flex-1">
           <div className="text-lg font-medium mb-4">List Category</div>
           <ul className="space-y-1 flex flex-col items-center">
             {
@@ -96,7 +96,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Contact Us & Social Icons */}
-        <div className="flex flex-col items-center md:items-end lg:w-1/4">
+        <div className="flex flex-col items-center md:items-end flex-1">
           <div className="text-lg font-medium mb-4">Contact Us</div>
           <div className="flex space-x-4">
             <a

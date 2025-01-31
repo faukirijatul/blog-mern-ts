@@ -244,7 +244,7 @@ const BlogList: React.FC = () => {
                   disabled={loading}
                 >
                   {loading && <FaSpinner className="animate-spin" />}
-                  <span>Load More</span>
+                  <span>{loading ? "Loading..." : "Load More"}</span>
                 </button>
               </div>
             )}

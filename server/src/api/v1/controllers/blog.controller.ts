@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { uploadImage, deleteImage } from "../../../config/cloudinary";
 import Blog from "../models/blog.model";
 import User from "../models/user.model";
@@ -125,7 +125,7 @@ export const createBlog = async (req: any, res: Response): Promise<any> => {
 };
 
 // get 5 random blogs
-export const getRandomBlogs = async (req: any, res: Response): Promise<any> => {
+export const getRandomBlogs = async (req: Request, res: Response): Promise<any> => {
   try {
     const blogs = await Blog.aggregate([
       { $sample: { size: 5 } },
@@ -169,7 +169,7 @@ export const getRandomBlogs = async (req: any, res: Response): Promise<any> => {
 };
 
 export const getLatestAndPopularBlogs = async (
-  req: any,
+  req: Request,
   res: Response
 ): Promise<any> => {
   try {

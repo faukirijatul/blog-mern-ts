@@ -9,11 +9,12 @@ import { getRandomBlogs, IRandomBlog } from "../store/slices/blogSlice";
 import { useSelector } from "react-redux";
 import { formatDate } from "../helper/formatDate";
 import { capitalizeFirstLetter } from "../helper/capitalizeFirstLetter";
+import BlogCarouselSkeleton from "./BlogCarouselSkeleton";
 
 const BlogCarousel: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
 
-  const { random5Blogs } = useSelector((state: RootState) => state.blog);
+  const { random5Blogs, getRandom5BlogsLoading } = useSelector((state: RootState) => state.blog);
 
   useEffect(() => {
     dispatch(getRandomBlogs());
@@ -44,6 +45,8 @@ const BlogCarousel: React.FC = () => {
   };
 
   const navigate = useNavigate();
+
+  if (getRandom5BlogsLoading) return <BlogCarouselSkeleton />;
 
   return (
     <div className="max-w-screen-xl mx-auto py-8">

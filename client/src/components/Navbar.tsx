@@ -8,17 +8,11 @@ import { AppDispatch, RootState } from "../store/store";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/userSlice";
 
-const navbarMenu = [
-  "Home",
-  "Basics",
-  "Frontend",
-  "Backend",
-  "Fullstack",
-]
+const navbarMenu = ["Home", "Basics", "Frontend", "Backend", "Fullstack"];
 
 const Navbar: React.FC = () => {
-  const { user } = useSelector((state : RootState ) => state.user);
-  const dispatch : AppDispatch = useDispatch();
+  const { user } = useSelector((state: RootState) => state.user);
+  const dispatch: AppDispatch = useDispatch();
 
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
@@ -53,10 +47,11 @@ const Navbar: React.FC = () => {
             <div className="text-2xl font-bold py-4">
               <Link
                 to="/"
-                className="flex items-center"
+                className="flex items-center gap-1"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               >
-                <img src={logo} alt="Logo" className="h-8" />
+                <img src={logo} alt="Logo" className="h-8" />{" "}
+                <span className="text-gray-900 italic">fauki</span>
               </Link>
             </div>
           </div>
@@ -68,17 +63,20 @@ const Navbar: React.FC = () => {
             {navbarMenu.map((menu, index) => (
               <Link
                 key={index}
-                to={
-                  menu === "Home"
-                    ? "/"
-                    : `/category/${menu.toLowerCase()}`
-                }
+                to={menu === "Home" ? "/" : `/category/${menu.toLowerCase()}`}
                 className="menu-item relative inline-block px-4 py-5 w-fit"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               >
                 {menu}
               </Link>
             ))}
+            <a
+              href="https://faukirijatul.vercel.app/"
+              target="_blank"
+              className="menu-item relative inline-block px-4 py-5 w-fit"
+            >
+              Portfolio
+            </a>
           </nav>
 
           {/* Menu mobile */}
@@ -90,11 +88,7 @@ const Navbar: React.FC = () => {
             {navbarMenu.map((menu, index) => (
               <Link
                 key={index}
-                to={
-                  menu === "Home"
-                    ? "/"
-                    : `/category/${menu.toLowerCase()}`
-                }
+                to={menu === "Home" ? "/" : `/category/${menu.toLowerCase()}`}
                 className="menu-item relative inline-block px-4 py-5 w-fit"
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -104,6 +98,13 @@ const Navbar: React.FC = () => {
                 {menu}
               </Link>
             ))}
+            <a
+              href="https://faukirijatul.vercel.app/"
+              target="_blank"
+              className="menu-item relative inline-block px-4 py-5 w-fit"
+            >
+              Portfolio
+            </a>
           </nav>
 
           {/* Profile Menu */}
@@ -118,11 +119,12 @@ const Navbar: React.FC = () => {
                 >
                   <img
                     src={
-                      user && user.picture ? user.picture.url :
-                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                      user && user.picture
+                        ? user.picture.url
+                        : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                     }
                     alt="User"
-                    className="w-8 h-8 rounded-full"
+                    className="w-8 h-8 rounded-full border border-gray-300"
                   />
                 </button>
 
@@ -138,12 +140,12 @@ const Navbar: React.FC = () => {
                     </Link>
                     {user && user.role === "admin" && (
                       <Link
-                      to="/admin/dashboard"
-                      className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => setShowDropdown(false)}
-                    >
-                      Admin Dashboard
-                    </Link>
+                        to="/admin/dashboard"
+                        className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => setShowDropdown(false)}
+                      >
+                        Admin Dashboard
+                      </Link>
                     )}
                     <button
                       onClick={handleLogout}

@@ -27,12 +27,23 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   if (currentUserLoading) return <Loading />;
   if (user && user.role !== "admin" && !currentUserLoading)
     return <Navigate to="/" />;
+  if (!user && !currentUserLoading) return <Navigate to="/" />;
+
+  return <>{children}</>;
+};
+
+const UserRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, currentUserLoading } = useSelector(
+    (state: RootState) => state.user
+  );
+
+  if (currentUserLoading) return <Loading />;
+  if (!user && !currentUserLoading) return <Navigate to="/" />;
 
   return <>{children}</>;
 };
 
 function App() {
-
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
@@ -47,7 +58,14 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<Navigate to="/" />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/profile"
+            element={
+              <UserRoute>
+                <Profile />
+              </UserRoute>
+            }
+          />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/category/:category" element={<BlogList />} />
         </Route>

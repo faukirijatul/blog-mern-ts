@@ -11,19 +11,25 @@ import {
   FaRegHeart,
 } from "react-icons/fa";
 import { formatDate } from "../../helper/formatDate";
+import LatestAndMostPopularSkeleton from "../../components/LatestAndMostPopularSkeleton";
 
 const LatestAndMostPopular: React.FC = () => {
   const navigate = useNavigate();
 
   const dispatch: AppDispatch = useDispatch();
 
-  const { fiveLatestBlogs, fivePopularBlogs } = useSelector(
-    (state: RootState) => state.blog
-  );
+  const {
+    fiveLatestBlogs,
+    fivePopularBlogs,
+    getFiveLatestAndPopularBlogsLoading,
+  } = useSelector((state: RootState) => state.blog);
 
   useEffect(() => {
     dispatch(getFiveLatestAndPopularBlogs());
   }, [dispatch]);
+
+  if (getFiveLatestAndPopularBlogsLoading)
+    return <LatestAndMostPopularSkeleton />;
 
   return (
     <div className="max-w-screen-xl mx-auto py-8">

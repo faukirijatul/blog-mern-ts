@@ -28,6 +28,10 @@ const Profile: React.FC = () => {
   const [picture, setPicture] = useState<string>("");
   const [imageDataToSend, setImageDataToSend] = useState<string>("");
 
+  useEffect(() => {
+    document.title = "Profile - Fauki Personal Blog";
+  }, [])
+
   const { user, updateUserLoading } = useSelector(
     (state: RootState) => state.user
   );

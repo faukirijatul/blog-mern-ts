@@ -31,7 +31,6 @@ import { formatDate } from "../../helper/formatDate";
 import { calculateTotalCommentsAndReplies } from "../../helper/calculateTotalCommentsAndReplies";
 
 const BlogPost: React.FC = () => {
-
   const { slug } = useParams<{ slug: string }>();
 
   const dispatch: AppDispatch = useDispatch();
@@ -44,6 +43,10 @@ const BlogPost: React.FC = () => {
   const [newComment, setNewComment] = useState<string>("");
   const [replyText, setReplyText] = useState<string>("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
+
+  useEffect(() => {
+      document.title = blog?.title ? `${blog?.title} - Fauki Personal Blog` : "Fauki Personal Blog";
+    }, [blog?.title])
 
   useEffect(() => {
     if (slug) {
@@ -122,7 +125,9 @@ const BlogPost: React.FC = () => {
               <div className="p-4 flex items-center justify-end gap-2">
                 <button
                   className="text-blue-500 hover:text-blue-700 cursor-pointer"
-                  onClick={() => window.location.href=(`/admin/edit/${blog.slug}`)}
+                  onClick={() =>
+                    (window.location.href = `/admin/edit/${blog.slug}`)
+                  }
                 >
                   <FaEdit />
                 </button>
@@ -157,15 +162,26 @@ const BlogPost: React.FC = () => {
                     <FaRegHeart /> Like
                   </button>
                 )}
-                <button className="flex items-center gap-1 cursor-pointer">
+                <button className="flex items-center gap-1">
                   {user &&
                   user.savedBlogs &&
                   user.savedBlogs.includes(blog._id) ? (
-                    <FaBookmark onClick={() => handleUnsaveBlog(blog._id)} />
+                    <div
+                      className="flex items-center gap-1 cursor-pointer"
+                      onClick={() => handleUnsaveBlog(blog._id)}
+                    >
+                      <FaBookmark />
+                      Saved
+                    </div>
                   ) : (
-                    <FaRegBookmark onClick={() => handleSaveBlog(blog._id)} />
+                    <div
+                      className="flex items-center gap-1 cursor-pointer"
+                      onClick={() => handleSaveBlog(blog._id)}
+                    >
+                      <FaRegBookmark />
+                      Save
+                    </div>
                   )}
-                  Save Post
                 </button>
               </div>
             </div>
@@ -205,7 +221,9 @@ const BlogPost: React.FC = () => {
                       {formatDate(comment.createdAt)}
                     </span>
                   </div>
-                  <p className="text-gray-700 mt-1 whitespace-pre-wrap">{comment.text}</p>
+                  <p className="text-gray-700 mt-1 whitespace-pre-wrap">
+                    {comment.text}
+                  </p>
                   <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
                     <button className="flex items-center gap-1">
                       {user &&
@@ -299,7 +317,9 @@ const BlogPost: React.FC = () => {
                             {formatDate(reply.createdAt)}
                           </span>
                         </div>
-                        <p className="text-gray-700 mt-1 whitespace-pre-wrap">{reply.text}</p>
+                        <p className="text-gray-700 mt-1 whitespace-pre-wrap">
+                          {reply.text}
+                        </p>
                         <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
                           <button className="flex items-center gap-1">
                             {user &&
