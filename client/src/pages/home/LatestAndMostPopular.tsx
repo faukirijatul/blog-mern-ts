@@ -105,7 +105,7 @@ const LatestAndMostPopular: React.FC = () => {
                 />
                 <div>
                   <h4
-                    className="text-lg font-semibold line-clamp-1"
+                    className="text-base md:text-lg font-semibold line-clamp-1"
                     title={blog.title}
                   >
                     {blog.title}
