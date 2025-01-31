@@ -73,3 +73,9 @@
 .prose ul li:last-child {
   margin-bottom: 0;
 }
+
+@media (max-width: 600px) {
+  .slick-next {
+    display: none !important;
+  }
+}
