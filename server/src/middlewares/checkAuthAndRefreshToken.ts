@@ -58,7 +58,23 @@ export const checkAuthAndRefreshToken = async (
       }
 
       req.user = user;
-      setTokenCookie(req.user, res);
+      
+      const token = jwt.sign(
+        { id: user._id },
+        process.env.JWT_SECRET as string,
+        {
+          expiresIn: "5m",
+        }
+      );
+
+      res.cookie("token", token, {
+        httpOnly: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 5 * 60 * 1000, // 5 minutes
+        expires: new Date(Date.now() + 5 * 60 * 1000),
+      });
+
       return next();
     } catch (error) {
       console.log("Error in checkAuthAndRefreshToken: ", error);
