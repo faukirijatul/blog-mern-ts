@@ -73,6 +73,7 @@ export const checkAuthAndRefreshToken = async (
         secure: process.env.NODE_ENV === "production",
         maxAge: 5 * 60 * 1000, // 5 minutes
         expires: new Date(Date.now() + 5 * 60 * 1000),
+        path: "/",
       });
 
       return next();
