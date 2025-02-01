@@ -70,7 +70,7 @@ export const login = createAsyncThunk("user/login", async (data: userData) => {
 
 export const logout = createAsyncThunk("user/logout", async () => {
   try {
-    const response = await axios.get(`${API_BASE}/api/v1/users/logout`, {
+    const response = await axios.post(`${API_BASE}/api/v1/users/logout`, {
       withCredentials: true,
     });
     if (response.data.success) {

@@ -7,7 +7,7 @@ const route = express.Router();
 route.get("/", getAllUsers);
 route.post("/login", login); // done
 route.get("/user", checkAuthAndRefreshToken, getCurrentUser); // done
-route.get("/logout", logout); // done
+route.post("/logout", logout); // done
 route.put("/", checkAuthAndRefreshToken, updateUser);
 route.get("/save/:blogId", checkAuthAndRefreshToken, saveBlog); // done
 route.get("/unsave/:blogId", checkAuthAndRefreshToken, unsaveBlog); // done
