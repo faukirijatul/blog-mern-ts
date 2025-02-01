@@ -58,7 +58,7 @@ export const checkAuthAndRefreshToken = async (
       }
 
       req.user = user;
-      
+
       const token = jwt.sign(
         { id: user._id },
         process.env.JWT_SECRET as string,
