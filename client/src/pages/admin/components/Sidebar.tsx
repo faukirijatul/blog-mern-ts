@@ -50,7 +50,7 @@ const Sidebar: React.FC<Props> = ({ isExpanded, setIsExpanded, isMobile }) => {
 
   return (
     <div
-      className={`h-[calc(100vh+64px)] bg-gray-800 text-white ${
+      className={`h-[calc(100vh+64px)] sm:h-screen bg-gray-800 text-white ${
         isExpanded ? "w-64" : "w-13"
       } transition-width duration-300 flex flex-col ${
         isMobile ? "fixed z-60" : "sticky"

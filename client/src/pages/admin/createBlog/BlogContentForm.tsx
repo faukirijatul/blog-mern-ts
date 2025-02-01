@@ -38,8 +38,6 @@ const BlogContentForm: React.FC = () => {
 
   const { blog: fechedBlog, createBlogLoading, updateBlogLoading } = useSelector((state: RootState) => state.blog);
 
-  console.log(createBlogLoading)
-
   const { slug } = useParams();
 
   useEffect(() => {
