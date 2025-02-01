@@ -20,6 +20,8 @@ export const setTokenCookie = (user: IUser, res: Response) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 5 * 60 * 1000, // 5 minutes
+    expires: new Date(Date.now() + 5 * 60 * 1000),
+    path: "/",
   });
 
   res.cookie("refreshToken", refreshToken, {
@@ -27,6 +29,8 @@ export const setTokenCookie = (user: IUser, res: Response) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 30 * 60 * 24 * 60 * 1000, // 30 days
+    expires: new Date(Date.now() + 30 * 60 * 24 * 60 * 1000),
+    path: "/",
   });
 
   return res.status(200).json({

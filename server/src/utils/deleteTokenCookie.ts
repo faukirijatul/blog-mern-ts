@@ -5,11 +5,13 @@ export const deleteTokenCookie = (res: Response): void => {
     httpOnly: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
+    path: "/",
   });
 
   res.clearCookie("refreshToken", {
     httpOnly: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
+    path: "/",
   });
 };
