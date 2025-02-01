@@ -45,8 +45,14 @@ const BlogPost: React.FC = () => {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
 
   useEffect(() => {
-      document.title = blog?.title ? `${blog?.title} - Fauki Personal Blog` : "Fauki Personal Blog";
-    }, [blog?.title])
+    if (getSingleBlogLoading) {
+      document.title = "Fauki Personal Blog";
+    } else {
+      document.title = blog?.title
+        ? `${blog?.title} - Fauki Personal Blog`
+        : "Fauki Personal Blog";
+    }
+  }, [blog?.title, getSingleBlogLoading]);
 
   useEffect(() => {
     if (slug) {
