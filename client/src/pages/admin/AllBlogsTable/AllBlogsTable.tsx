@@ -89,7 +89,7 @@ const AllBlogsTable: React.FC = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-2 md:p-4 lg:p-6">
       <h2 className="text-2xl font-bold mb-4 mt-15">All Blogs</h2>
 
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
@@ -222,15 +222,15 @@ const AllBlogsTable: React.FC = () => {
           : blogs.map((blog) => (
               <div
                 key={blog._id}
-                className="relative flex items-start gap-4 bg-white p-4 border border-gray-300 shadow"
+                className="relative flex items-start gap-4 bg-white p-2 border border-gray-300 shadow"
               >
-                <div className="min-w-32">
+                <div className="min-w-15">
                   <img
                     src={blog.thumbnail.url}
                     alt={blog.title}
-                    className="w-32 h-32 object-cover"
+                    className="w-15 h-15 object-cover"
                   />
-                  <div className="p-4 flex items-center justify-center gap-2">
+                  <div className="p-2 flex items-center justify-center gap-2">
                     <button
                       className="text-blue-500 hover:text-blue-700 cursor-pointer"
                       onClick={() => navigate(`/admin/edit/${blog.slug}`)}
@@ -243,10 +243,10 @@ const AllBlogsTable: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold line-clamp-2">
+                  <h4 className="text-base font-semibold line-clamp-2">
                     {blog.title}
                   </h4>
-                  <div className="text-gray-500 text-sm flex items-center gap-1 flex-wrap">
+                  <div className="text-gray-500 text-xs flex items-center gap-1 flex-wrap">
                     <p className="flex items-center gap-1">
                       By {blog.authorData.name}
                     </p>{" "}
@@ -271,7 +271,7 @@ const AllBlogsTable: React.FC = () => {
                       <FaCalendarAlt /> {formatDate(blog.createdAt)}
                     </p>
                   </div>
-                  <p className="text-gray-900 line-clamp-4 mt-2">
+                  <p className="text-gray-900 line-clamp-4 mt-2 text-sm">
                     {blog.highlight}
                   </p>
                 </div>

@@ -123,7 +123,7 @@ const Navbar: React.FC = () => {
                       : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                   }
                   alt="User"
-                  className="w-8 h-8 rounded-full border border-gray-300"
+                  className="w-8 h-8 rounded-full object-cover border border-gray-300"
                 />
               </button>
 

@@ -10,10 +10,12 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaBullhorn,
+  FaSpinner,
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../../store/store";
+import { AppDispatch, RootState } from "../../../store/store";
 import { logout } from "../../../store/slices/userSlice";
+import { useSelector } from "react-redux";
 
 interface MenuItem {
   name: string;
@@ -31,6 +33,8 @@ type Props = {
 const Sidebar: React.FC<Props> = ({ isExpanded, setIsExpanded, isMobile }) => {
   const dispatch: AppDispatch = useDispatch();
 
+  const { logoutLoading } = useSelector((state: RootState) => state.user);
+
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
   };
@@ -46,7 +50,7 @@ const Sidebar: React.FC<Props> = ({ isExpanded, setIsExpanded, isMobile }) => {
 
   return (
     <div
-      className={`h-screen bg-gray-800 text-white ${
+      className={`h-[calc(100vh+64px)] bg-gray-800 text-white ${
         isExpanded ? "w-64" : "w-13"
       } transition-width duration-300 flex flex-col ${
         isMobile ? "fixed z-60" : "sticky"
@@ -80,9 +84,14 @@ const Sidebar: React.FC<Props> = ({ isExpanded, setIsExpanded, isMobile }) => {
           onClick={() => dispatch(logout())}
         >
           <span className="text-xl">
-            <FaSignOutAlt />
+            {logoutLoading ? (
+              <FaSpinner className="animate-spin" />
+            ) : (
+              <FaSignOutAlt />
+            )}
           </span>
           {isExpanded && <span className="text-base">Logout</span>}
+          {logoutLoading && <FaSpinner className="animate-spin ml-2" />}
         </div>
       </nav>
     </div>

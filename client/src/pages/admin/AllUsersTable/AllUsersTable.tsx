@@ -75,7 +75,7 @@ const AllUsersTable: React.FC = () => {
   };
 
   return (
-    <div className="p-6 mt-15">
+    <div className="p-2 md:p-4 lg:p-6 mt-15">
       <h2 className="text-2xl font-bold mb-4">All Users</h2>
 
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">

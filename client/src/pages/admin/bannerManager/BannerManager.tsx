@@ -104,7 +104,7 @@ const BannerManager: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto mt-15">
+    <div className="p-2 md:p-4 lg:p-6 max-w-4xl mx-auto mt-15">
       <h2 className="text-2xl font-bold mb-4">Banner Manager</h2>
 
       {/* Form Input */}

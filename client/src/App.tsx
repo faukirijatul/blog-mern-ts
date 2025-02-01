@@ -20,14 +20,16 @@ import { getRandomBanners } from "./store/slices/bannerSlice";
 import Layout from "./pages/Layout";
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, currentUserLoading } = useSelector(
+  const { user, currentUserLoading, isAuthenticated } = useSelector(
     (state: RootState) => state.user
   );
 
   if (currentUserLoading) return <Loading />;
+
   if (user && user.role !== "admin" && !currentUserLoading)
     return <Navigate to="/" />;
-  if (!user && !currentUserLoading) return <Navigate to="/" />;
+
+  if (!user && !currentUserLoading && !isAuthenticated) return <Navigate to="/" />;
 
   return <>{children}</>;
 };
