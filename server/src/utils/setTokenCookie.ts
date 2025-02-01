@@ -17,18 +17,16 @@ export const setTokenCookie = (user: IUser, res: Response) => {
 
   res.cookie("token", token, {
     httpOnly: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 5 * 60 * 1000, // 5 minutes
-    expires: new Date(Date.now() + 5 * 60 * 1000),
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 30 * 60 * 24 * 60 * 1000, // 30 days
-    expires: new Date(Date.now() + 30 * 60 * 24 * 60 * 1000),
   });
 
   return res.status(200).json({
