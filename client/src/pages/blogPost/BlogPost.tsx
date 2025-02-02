@@ -9,7 +9,7 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import LoadingPost from "../../components/LoadingPost";
+import LoadingPost from "./components/LoadingPost";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import {
@@ -29,9 +29,12 @@ import { useSelector } from "react-redux";
 import { saveBlog, unsaveBlog } from "../../store/slices/userSlice";
 import { formatDate } from "../../helper/formatDate";
 import { calculateTotalCommentsAndReplies } from "../../helper/calculateTotalCommentsAndReplies";
+import BlogNotFound from "./components/BlogNotFound";
 
 const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -56,7 +59,9 @@ const BlogPost: React.FC = () => {
 
   useEffect(() => {
     if (slug) {
-      dispatch(getSingleBlog(slug));
+      dispatch(getSingleBlog(slug)).finally(() => {
+        setIsFirstLoad(false);
+      });
     }
   }, [slug, dispatch]);
 
@@ -369,6 +374,10 @@ const BlogPost: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {!blog && !getSingleBlogLoading && !isFirstLoad && (
+        <BlogNotFound />
       )}
     </>
   );
