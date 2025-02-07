@@ -150,7 +150,8 @@ const BlogList: React.FC = () => {
           <div className="flex-2">
             <div className=" mb-4 flex items-center justify-between">
               <h3 className="text-base md:text-xl font-bold">All Blogs</h3>
-              <div>
+              <div className="flex items-center gap-2">
+              {loading && <FaSpinner className="animate-spin" />}
                 {order === "desc" ? (
                   <FaArrowUp
                     onClick={() => setOrder("asc")}
