@@ -70,11 +70,11 @@ const Navbar: React.FC = () => {
             </Link>
           ))}
           <a
-            href="https://faukirijatul.vercel.app/"
+            href="https://fauki.com/"
             target="_blank"
             className="menu-item relative inline-block px-4 py-5 w-fit"
           >
-            Portfolio
+            About Me
           </a>
         </nav>
 
@@ -98,11 +98,11 @@ const Navbar: React.FC = () => {
             </Link>
           ))}
           <a
-            href="https://faukirijatul.vercel.app/"
+            href="https://fauki.com/"
             target="_blank"
             className="menu-item relative inline-block px-4 py-5 w-fit"
           >
-            Portfolio
+            About Me
           </a>
         </nav>
 
@@ -167,3 +167,4 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+
