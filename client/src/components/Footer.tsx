@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
             </li>
             <li>
               <a
-                href="https://faukirijatul.vercel.app/"
+                href="https://fauki.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-gray-400"
@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
               </a>
             </li>
             <a
-              href="https://faukirijatul.vercel.app/"
+              href="https://fauki.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-400"
@@ -94,24 +94,24 @@ const Footer: React.FC = () => {
         <div className="flex flex-col items-center md:items-end flex-1">
           <div className="text-lg font-medium mb-4">Contact Us</div>
           <div className="flex space-x-4">
-            <a
+            {/* <a
               href="https://faukirijatul.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xl hover:text-gray-400"
             >
               <FaFacebook />
-            </a>
-            <a
+            </a> */}
+            {/* <a
               href="https://faukirijatul.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xl hover:text-gray-400"
             >
               <FaTwitter />
-            </a>
+            </a> */}
             <a
-              href="https://faukirijatul.vercel.app/"
+              href="https://instagram.com/faukirijatul"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xl hover:text-gray-400"
@@ -119,7 +119,7 @@ const Footer: React.FC = () => {
               <FaInstagram />
             </a>
             <a
-              href="https://faukirijatul.vercel.app/"
+              href="https://www.linkedin.com/in/faukirijatulh/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xl hover:text-gray-400"
